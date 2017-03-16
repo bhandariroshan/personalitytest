@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load cache %}
+{% load staticfiles i18n %}
+
+{% block title %}Preview{% endblock title %}
+
+{% block css %}
+<style type="text/css">
+  #most-liked-post, #second-most-liked-post{
+    background-color: rgb(255, 255, 255);
+    height: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock css %}
+
+{% cache 1200 content %}
+{% block content %}
+    <!-- Header -->
+    {% now "jS F Y H:i" %}
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1><a href="/">Facebook Stats</a></h1>
+            <h3>Trying to analyze some simple stats from Facebook API.</h3>
+            <br>
+
+            <div class="row">
+              <div class="col-md-4 col-md-offset-1">
+                <h2>Most Liked Post for this page !</h2>
+                <div id="most-liked-post">
+                </div>
+                
+              </div>
+              <div class="col-md-4 col-md-offset-1">
+                <h2>Second most liked post !</h2>
+                  <div id="second-most-liked-post">
+                  </div>
+                  
+              </div>
+            </div>
+
+
+        </div>
+    </header>
+{% endblock content %}
+{% endcache %}
+
+{% block javascript %}
+<script src="{% static 'js/csrftoken.js' %}"></script>
+<script type="text/javascript">
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '{{app_id}}',
+      xfbml      : true,
+      version    : 'v2.7'
+    });
+     $(document).trigger('fbload');
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+
+$(document).on(
+    'fbload',  //  <---- HERE'S OUR CUSTOM EVENT BEING LISTENED FOR
+    function(){
+        //some code that requires the FB object
+        //such as...
+        // FB.getLoginStatus(function(res){
+        //     if( res.status == "connected" ){
+        //         FB.api('/me', function(fbUser) {
+        //             console.log("Open the pod bay doors, " + fbUser.name + ".");
+        //         });
+        //     }else{
+        //         console.log('not logged in');
+        //     }
+        // });
+        get_page_info();
+        get_page_posts();
+    }
+);
+
+function get_page_posts(){
+    /* make the API call */
+    FB.api(
+        "/209242849219109/posts/?fields=story,created_time,message,link&access_token={{token}}",
+        function (response) {
+          if (response && !response.error) {
+            // console.log('total posts' + response.data.length.toString());
+            process_posts(response);
+          }
+        }
+    );
+
+}
+
+function get_page_info(){
+    /* make the API call */
+    page_info = {};
+    FB.api(
+        "/209242849219109/?fields=about,affiliation,bio,category,cover,engagement,fan_count,is_verified,link&access_token={{token}}",
+        function (response) {
+          if (response && !response.error) {
+            /* handle the result */
+            // console.log(response);
+            page_info = response;
+          }
+        }
+    );
+}
+
+function post_data(data) {
+  var url = "/api/stats/";
+  $.ajax({
+    type: "POST",
+    url: url,
+    data: JSON.stringify(data),
+    dataType: 'json',
+    contentType: "application/json",
+    success: function(response){
+      get_most_liked_post();
+      var second_post_url = response.link;
+      var second_post_html = '<div class="fb-post"'+ 
+                      'data-href="' + second_post_url + '"' +
+                      'data-width="500"></div>';
+      $('#second-most-liked-post').html(second_post_html);
+      FB.XFBML.parse(document.getElementById('second-most-liked-post'));
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert(errorThrown);
+      }
+  });
+}
+
+function get_most_liked_post(){
+  var url = "/api/stats/?page_id=209242849219109";
+   $.ajax({
+    type: "GET",
+    url: url,
+    success: function(response){
+      console.log('Most liked post');
+      console.log(response);
+      if(response.link.startsWith("https://www.facebook.com")){
+        var post_url = response.link;
+      }else{
+        var post_url = "https://www.facebook.com/209242849219109/posts/" + response.id + "/"
+      }
+      console.log(post_url);
+      var post_html = '<div class="fb-post"'+ 
+                      'data-href="' + post_url + '"' +
+                      'data-width="500"></div>';
+      $('#most-liked-post').html(post_html);
+      FB.XFBML.parse(document.getElementById('most-liked-post'));
+    },
+    error: function( xhr, status, errorThrown ) {
+      alert(errorThrown);
+      }
+  });
+}
+
+function process_posts(posts) {
+  aggregated_posts = [];
+  for(i=0;i<posts.data.length;i++){
+    var post = posts.data[i];
+    var post_response = get_post_likes(post, posts.data.length);
+  }
+}
+
+function get_post_likes(post, posts_len) {
+  var url = "/" + post.id + "/likes/?summary=true"
+  FB.api(
+      url + "&access_token={{token}}",
+      function (response) {
+        if (response && !response.error) {
+          post.total_likes = response.summary.total_count;
+          aggregated_posts.push(post);
+          if(aggregated_posts.length == posts_len){
+              var processed_data = {
+                posts: aggregated_posts,
+                page_info: page_info
+              }
+              console.log(processed_data);
+              post_data(processed_data);
+          }
+        }
+      }
+  );
+}
+
+</script>
+{% endblock javascript %}

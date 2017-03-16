@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% load display_account %}
+{% block title %} Account Connections {% endblock title %}
+
+{% block content %}
+<header id="top" class="header">
+<div class="text-vertical-center">
+	<h1>{% trans "Account Connections" %}</h1>
+
+<div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-3">
+	{% if form.accounts %}
+	<h2>{% trans 'Connected Accounts' %}</h2>
+	<form method="post" action="{% url 'socialaccount_connections' %}">
+	{% csrf_token %}
+	<fieldset>
+	{% if form.non_field_errors %}
+	<div id="errorMsg">{{ form.non_field_errors }}</div>
+	{% endif %}
+	{% for base_account in form.accounts %}
+	{% with base_account.get_provider_account as account %}
+	<div style="margin-bottom: 20px;">
+	<input id="id_account_{{ base_account.id }}" type="radio" name="account" value="{{ base_account.id }}" hidden="hidden" />
+	<button type="submit" class="btn btn-block btn-social btn-{{account.get_brand.name|lower}} signin-btn signin-btn" onClick="$('#id_account_{{base_account.id}}').prop('checked', 'checked');">
+			    <i class="fa fa-{{account.get_brand.name|lower}}"></i> Disconnect {{account.get_brand.name}}
+			  </button>
+	</div>
+	{% endwith %}
+	{% endfor %}
+
+	<div>
+	</div>
+
+	</fieldset>
+
+	</form>
+
+	{% else %}
+	<p>{% trans 'You currently have no social network accounts connected to this account.' %}</p>
+	{% endif %}
+</div>
+	<div class="col-md-3">
+		<h2>{% trans 'Connect More' %}</h2>
+
+			{{ form.accounts|display_account|safe }}
+
+
+	</div>
+	<div class="col-md-3"></div>
+</div>
+</div>
+</header>
+{% endblock content %}

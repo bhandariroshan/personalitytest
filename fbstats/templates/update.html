@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+
+{% block title %}Update UserData{% endblock title %}
+
+{% block css %}
+<style type="text/css">
+</style>
+{% endblock css %}
+
+{% block content %}
+    <div class="container" style="margin-top: 100px;">
+      <div class="row">
+      <div class="col-md-12">
+            <div class="alert alert-success" role="alert" style="visibility: hidden;" id="success-msg"></div>
+      </div>
+        <div class="col-md-6">
+            <h1>Update User-Data</h1>
+
+            <div class="list-group" id="user-data-list">
+              <a href="#" class="list-group-item active">
+                  List of User Data
+              </a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form style="margin-top: 50px; display: none;" id="updateform">
+              <div class="form-group">
+                <label for="id">User Data Id</label>
+                <input type="text" class="form-control" name="id" id="id" placeholder="User Data Id" readonly="True">
+              </div>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+              </div>
+              <div class="form-group">
+                <label for="text">Text</label>
+                <textarea class="form-control" id="text" name="text" placeholder="Text"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="user">User Id</label>
+                <input type="text" class="form-control" id="user" name="user" placeholder="User" readonly="True">
+              </div>
+              
+              <a href="#" class="btn btn-default" onclick="update_userdata()">Update</a>
+            </form>
+        </div>
+      </div>
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+<script src="{% static 'js/csrftoken.js' %}"></script>
+<script type="text/javascript">
+userid = "{{request.user.id}}";
+form_data = {};
+all_user_data = [];
+$(document).ready(function() {
+  get_all_userdata();
+});
+
+function get_all_userdata() {
+  // body...
+  var url = "/api/user-data/";
+  $.get(
+      url,
+      function(data, status){
+        all_user_data = data;
+        for(var i=0;i<data.length;i++){
+          var each_data = data[i];
+          // var args = "'" + each_data.id + "', '" + each_data.name + "', '" + each_data.text + "', '" + each_data.id + "'";
+          var args = "'" + i + "'";
+          var content = "UserData ID: " + each_data.id + " Name: " + each_data.name + " Text: " + each_data.text + " User Id: " + each_data.user;
+          var msg = '<a id="'+ each_data.id +'" href="#" class="list-group-item" onclick="set_userdata(' + args + ')">' + content + '</a>';
+          $('#user-data-list').append(msg);
+        }
+  });
+}
+
+function update_userdata() {
+  var name = $('#name').val();
+  var text = $('#text').val();
+  var userid = $("#user").val();
+  var userdataid = $('#id').val();
+
+  // update the global data
+  for(var i=0;i<all_user_data.length;i++){
+    if(userdataid == all_user_data[i].id){
+      all_user_data[i].name = name;
+      all_user_data[i].text = text;
+      break;
+    }
+  }
+
+  // update the a href text
+  var content = "UserData ID: " + userdataid + " Name: " + name + " Text: " + text + " User Id: " + userid;
+  $('#' + userdataid).text(content);
+
+  form_data.name = name;
+  form_data.text = text;
+  form_data.user = parseInt(userid);
+
+  var url = '/api/user-data/' + userdataid + "/";
+
+  $.ajax({
+    url: url,
+    type: 'PUT',
+    data: form_data,
+    success: post_data_success(form_data)
+  });
+
+}
+
+function set_userdata(index) {
+  // hide the success msg
+  $('#success-msg').prop("style", "visibility: hidden;");
+
+  var udata = all_user_data[index];
+  $('#id').val(udata.id);
+  $('#name').val(udata.name);
+  $('#text').val(udata.text);
+  $('#user').val(udata.user);
+  $('#updateform').prop('style', "margin-top: 50px;");
+}
+
+function post_data_success(data) {
+  // body...
+  $('#success-msg').text('User Data updated successfully.');
+  $('#success-msg').prop("style", "");
+}
+</script>
+{% endblock javascript %}
