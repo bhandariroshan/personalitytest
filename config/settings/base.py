@@ -17,7 +17,7 @@ APPS_DIR = ROOT_DIR.path('fbstats')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
-
+ALLOWED_HOSTS = ['*', '139.59.236.7']
 # .env file, should load only in development environment
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
 
