@@ -26,7 +26,7 @@ from .base import *  # noqa
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
-ALLOWED_HOSTS = ['139.59.236.7', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['139.59.236.7:8000', 'localhost', '127.0.0.1']
 
 # This ensures that Django will be able to detect a secure connection
 # properly on Heroku.
