@@ -1,6 +1,7 @@
 from allauth.socialaccount.models import SocialToken
 import facebook
 import json
+import requests
 
 # from mainapp.models import FacebookPost
 
