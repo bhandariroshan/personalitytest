@@ -22,5 +22,6 @@ class UserData(models.Model):
     last_upd_by = models.TextField(null=True, blank=True)
 
     likes = JSONField(null=True, blank=True)
+
     def __str__(self):
-        return str(self.name)
+        return str(self.user.first_name) + str(self.user.last_name)
