@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import djcelery
+
+djcelery.setup_loader()
 
 ROOT_DIR = environ.Path(__file__) - 3  # (fbstats/config/settings/base.py - 3 = fbstats/)
 APPS_DIR = ROOT_DIR.path('fbstats')
@@ -276,7 +279,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 # ACCOUNT_SIGNUP_FORM_CLASS = 'apps.mainapp.forms.SignupForm'
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
 # END AUTHENTICATION CONFIGURATION
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/load/'
 LOGIN_URL = 'account_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
@@ -285,5 +288,17 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
+
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# celery settings
+BROKER_URL = "amqp://fbstats:fbstats@localhost:5672/myvhost"
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kathmandu'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+os.environ["CELERY_LOADER"] = "django"
