@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 
-from mainapp.views import DataPreview
+from mainapp.views import DataPreview, LoadUserLikes
 
 from django.views.decorators.cache import cache_page
 from action.api import UserDataDetail, UserDataList
@@ -23,7 +23,7 @@ urlpatterns = [
     ),
     url(
         r'^load/',
-        view=TemplateView.as_view(template_name='load.html'),
+        view=LoadUserLikes.as_view(),
         name='load'
     ),
     # url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),

@@ -31,3 +31,24 @@ class DataPreview(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
+
+
+class LoadUserLikes(LoginRequiredMixin, View):
+    """Module for previewing data from facebook."""
+    template_name = 'load.html'
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        tokens = SocialToken.objects.filter(
+            account__user=self.request.user,
+            account__provider='facebook'
+        )
+        if tokens:
+            context['token'] = tokens[0].token
+
+        fb_app = get_object_or_404(SocialApp, id=1)
+        context['app_id'] = fb_app.client_id
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
