@@ -18,7 +18,7 @@ from action.api import UserDataDetail, UserDataList
 urlpatterns = [
     url(
         r'^$',
-        TemplateView.as_view(template_name='landing.html'),
+        view=TemplateView.as_view(template_name='landing.html'),
         name='home'
     ),
     url(
@@ -40,7 +40,7 @@ urlpatterns = [
             'rest_framework.urls', namespace='rest_framework')),
     url(
         r'^preview/$',
-        view==DataPreview.as_view(),
+        view=DataPreview.as_view(),
         name='data-preview'
     )
     # Your stuff: custom urls includes go here
