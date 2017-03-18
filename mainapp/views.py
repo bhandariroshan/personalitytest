@@ -58,10 +58,10 @@ class LoadUserLikes(LoginRequiredMixin, View):
 
         user_data = UserData.objects.get_or_create(user=request.user)
 
-        if not user_data.likes:
+        if not user_data[0].likes:
             myfbgraph = facebook.GraphAPI(tokens[0].token)
             my_likes = get_myfacebook_likes(myfbgraph)
-            user_data.likes = my_likes
-            user_data.save()
+            user_data[0].likes = my_likes
+            user_data[0].save()
 
         return render(request, self.template_name, self.get_context_data())
