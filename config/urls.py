@@ -38,11 +38,6 @@ urlpatterns = [
         r'^api-auth/', include(
             'rest_framework.urls', namespace='rest_framework')),
     url(
-        r'^$',
-        TemplateView.as_view(template_name='landing.html'),
-        name='home'
-    ),
-    url(
         r'^preview/$',
         view==DataPreview.as_view(),
         name='data-preview'
