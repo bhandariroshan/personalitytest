@@ -9,7 +9,9 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 
-from mainapp.views import DataPreview, LoadUserLikes
+from mainapp.views import DataPreview
+from mainapp.views import LoadUserLikes
+
 from django.views.decorators.cache import cache_page
 from action.api import UserDataDetail, UserDataList
 
