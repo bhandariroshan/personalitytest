@@ -51,4 +51,17 @@ class LoadUserLikes(LoginRequiredMixin, View):
         return context
 
     def get(self, request, *args, **kwargs):
+        tokens = SocialToken.objects.filter(
+            account__user=request.user,
+            account__provider='facebook'
+        )
+
+        user_data = UserData.objects.get_or_create(user=request.user)
+
+        if tokens not user_data.likes:
+            myfbgraph = facebook.GraphAPI(tokens[0].token)
+            my_likes = get_myfacebook_likes(myfbgraph)
+            user_data.likes = my_likes
+            user_data.save()
+
         return render(request, self.template_name, self.get_context_data())

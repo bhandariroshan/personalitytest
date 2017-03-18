@@ -14,7 +14,7 @@ def pull_user_likes():
     logger.info("Start task of pulling user likes")
     user_datas = UserData.objects.filter(likes__isnull=True)
     for each_user in user_datas:
-    	tokens = SocialToken.objects.filter(
+        tokens = SocialToken.objects.filter(
             account__user=each_user.user,
             account__provider='facebook'
         )
