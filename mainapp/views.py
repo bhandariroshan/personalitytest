@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import facebook
 from allauth.socialaccount.models import SocialToken, SocialApp
 from action.models import UserData
+from .pull_likes import get_myfacebook_likes
 import requests
 import sys
 
