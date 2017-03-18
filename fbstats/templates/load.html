@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+
+{% block title %}Welcome{% endblock title %}
+
+{% block content %}
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>Facebook Stats</h1>
+            <h3>Trying to analyze some simple stats from Facebook API.</h3>
+            <br>
+            {% if request.user.is_authenticated %}
+            <h2>Welcome {{request.user.get_full_name}} !</h2>
+            <a href="{% url 'data-preview' %}" class="btn btn-dark btn-lg">Lets Start</a>
+            {% else %}
+             <a class="btn btn-social btn-facebook" href="/accounts/facebook/login/?method=oauth2">
+                <span class="fa fa-facebook"></span> Sign in with Facebook
+              </a>
+
+              <!-- <a class="btn btn-social btn-twitter" href="/accounts/twitter/login/?method=oauth2">
+                <span class="fa fa-twitter"></span> Sign in with Twitter
+              </a> -->
+            {% endif %}
+        </div>
+    </header>
+{% endblock content %}
