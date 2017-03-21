@@ -68,7 +68,7 @@ X_FRAME_OPTIONS = 'DENY'
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com', ])
 # END SITE CONFIGURATION
 
-ALLOWED_HOSTS = ['139.59.236.7', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['139.59.236.7:8000', 'localhost', '127.0.0.1', '*']
 INSTALLED_APPS += ['gunicorn', ]
 
 
