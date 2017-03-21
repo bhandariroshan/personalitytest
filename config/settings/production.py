@@ -68,7 +68,8 @@ X_FRAME_OPTIONS = 'DENY'
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com', ])
 # END SITE CONFIGURATION
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'http://dev2.oneoneday.com:8000', 'http://dev2.oneoneday.com', '192.241.218.209','192.241.218.209:8000']
+ALLOWED_HOSTS = ['*']
+
 INSTALLED_APPS += ['gunicorn', ]
 
 

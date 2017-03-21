@@ -19,14 +19,6 @@ from .base import *  # noqa
 DEBUG = env.bool('DJANGO_DEBUG', default=True)
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
-ALLOWED_HOSTS = [
-        'localhost', '127.0.0.1', '*', 
-        'http://dev2.oneoneday.com:8000', 
-        'http://dev2.oneoneday.com',
-        '192.241.218.209',
-        '192.241.218.209:8000'
-]
-
 
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -83,7 +75,7 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 # ------------------------------------------------------------------------------
 
 
-ALLOWED_HOSTS = ['139.59.236.7', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

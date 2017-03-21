@@ -21,14 +21,7 @@ APPS_DIR = ROOT_DIR.path('fbstats')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
-
-ALLOWED_HOSTS = [
-        'localhost', '127.0.0.1', '*', 
-        'http://dev2.oneoneday.com:8000', 
-        'http://dev2.oneoneday.com',
-        '192.241.218.209',
-        '192.241.218.209:8000'
-]
+ALLOWED_HOSTS = ['*']
 
 
 # .env file, should load only in development environment
