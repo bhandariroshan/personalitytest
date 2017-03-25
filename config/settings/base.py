@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
-import djcelery
+# import djcelery
 import os
 from kombu import Exchange, Queue
 
-djcelery.setup_loader()
+# djcelery.setup_loader()
 
 ROOT_DIR = environ.Path(__file__) - 3  # (fbstats/config/settings/base.py - 3 = fbstats/)
 APPS_DIR = ROOT_DIR.path('fbstats')
