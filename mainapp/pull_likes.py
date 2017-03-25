@@ -16,7 +16,7 @@ def get_myfacebook_likes(myfacebook_graph, user):
 
             user_like  = UserLikes.objects.get_or_create(user=user)
             user_like[0].like = like
-            user_like.save()
+            user_like[0].save()
 
         if 'next' in myfacebook_likes_info['paging'].keys():
             myfacebook_likes_info = requests.get(myfacebook_likes_info['paging']['next']).json()
