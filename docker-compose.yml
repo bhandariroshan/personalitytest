@@ -23,30 +23,6 @@ services:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
 
-  django:
-    build:
-      context: .
-      dockerfile: ./compose/django/Dockerfile
-    user: django
-    depends_on:
-      - postgres
-      - redis
-      - rabbit
-    command: /gunicorn.sh
-    env_file: .env
-
-  nginx:
-    build: ./compose/nginx
-    depends_on:
-      - django
-
-    ports:
-      - "0.0.0.0:80:80"
-
-  redis:
-    image: redis:latest
-
-
   # Celery worker
   worker:
     build:
@@ -62,4 +38,26 @@ services:
     depends_on:
       - rabbit
 
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    user: django
+    depends_on:
+      - postgres
+      - redis
+      - rabbit
+      - worker
+    command: /gunicorn.sh
+    env_file: .env
 
+  nginx:
+    build: ./compose/nginx
+    depends_on:
+      - django
+
+    ports:
+      - "0.0.0.0:80:80"
+
+  redis:
+    image: redis:latest
