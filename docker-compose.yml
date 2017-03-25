@@ -20,6 +20,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - rabbit
     command: /gunicorn.sh
     env_file: .env
 
@@ -34,4 +35,31 @@ services:
 
   redis:
     image: redis:latest
+
+  # RabbitMQ
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3.6.0
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
+    ports:
+      - "5672:5672"  # we forward this port because it's useful for debugging
+      - "15672:15672"  # here, we can access rabbitmq management plugin
+
+  # Celery worker
+  worker:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    command: ./compose/django/run_celery.sh
+    volumes:
+      - .:/app
+    links:
+      - db
+      - rabbit
+      - redis
+    depends_on:
+      - rabbit
+
 
