@@ -51,8 +51,8 @@ services:
   worker:
     build:
       context: .
-      dockerfile: ./compose/django/Dockerfile
-    command: ./compose/django/run_celery.sh
+      dockerfile: ./compose/celery/Dockerfile
+    command: ./compose/celery/run_celery.sh
     volumes:
       - .:/app
     links:
