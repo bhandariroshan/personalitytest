@@ -294,17 +294,7 @@ ADMIN_URL = r'^admin/'
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 
-# celery settings
-BROKER_URL = "amqp://fbstats:fbstats@localhost:5672/myvhost"
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
-os.environ["CELERY_LOADER"] = "django"
-
+# Redis
 
 REDIS_PORT = 6379  
 REDIS_DB = 0  
@@ -315,19 +305,19 @@ RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
 if RABBIT_HOSTNAME.startswith('tcp://'):  
     RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
 
-# BROKER_URL = os.environ.get('BROKER_URL',  
-#                             '')
-# if not BROKER_URL:  
-#     BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
-#         user=os.environ.get('RABBIT_ENV_USER', 'admin'),
-#         password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'),
-#         hostname=RABBIT_HOSTNAME,
-#         vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
+BROKER_URL = os.environ.get('BROKER_URL',  
+                            '')
+if not BROKER_URL:  
+    BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
+        user=os.environ.get('RABBIT_ENV_USER', 'admin'),
+        password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'),
+        hostname=RABBIT_HOSTNAME,
+        vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
 
 # We don't want to have dead connections stored on rabbitmq, so we have to negotiate using heartbeats
-# BROKER_HEARTBEAT = '?heartbeat=30'  
-# if not BROKER_URL.endswith(BROKER_HEARTBEAT):  
-#     BROKER_URL += BROKER_HEARTBEAT
+BROKER_HEARTBEAT = '?heartbeat=30'  
+if not BROKER_URL.endswith(BROKER_HEARTBEAT):  
+    BROKER_URL += BROKER_HEARTBEAT
 
 BROKER_POOL_LIMIT = 1  
 BROKER_CONNECTION_TIMEOUT = 10
@@ -354,7 +344,7 @@ CELERY_SEND_TASK_ERROR_EMAILS = False
 CELERY_TASK_RESULT_EXPIRES = 600
 
 # Set redis as celery result backend
-
+CELERY_RESULT_BACKEND = 'redis://%s:%d/%d' % (REDIS_HOST, REDIS_PORT, REDIS_DB)  
 CELERY_REDIS_MAX_CONNECTIONS = 1
 
 # Don't use pickle as serializer, json is much safer
