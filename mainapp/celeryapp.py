@@ -4,7 +4,7 @@ from celery import Celery as CeleryClass
 from django.conf import settings
 
 # Indicate Celery to use the default Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fbstats.config.settings.base')
 
 app = CeleryClass('mainapp')
 app.config_from_object('django.conf:settings')
