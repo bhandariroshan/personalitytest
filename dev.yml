@@ -61,8 +61,3 @@ services:
       - redis
     depends_on:
       - rabbit
-
-
-
-
-
