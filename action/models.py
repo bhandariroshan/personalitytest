@@ -21,7 +21,13 @@ class UserData(models.Model):
     last_upd = models.DateTimeField(auto_now_add=True)
     last_upd_by = models.TextField(null=True, blank=True)
 
-    likes = JSONField(null=True, blank=True)
+    # likes = JSONField(null=True, blank=True)
 
     def __str__(self):
         return str(self.user.first_name) + " " + str(self.user.last_name)
+
+
+class UserLikes(models.Model):
+    user = models.ForeignKey(User)
+    like = JSONField(null=True, blank=True)
+        
