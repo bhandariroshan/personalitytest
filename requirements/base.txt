@@ -60,4 +60,4 @@ django-celery==3.1.17
 django-debug-toolbar
 django-extensions
 Werkzeug
-kombu
+kombu==4.0.2
