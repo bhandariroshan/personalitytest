@@ -55,10 +55,9 @@ requests==2.11.0
 requests-oauthlib==0.6.2
 python-memcached==1.58
 git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
-celery==3.1.25
+# celery==3.1.25
+celery==3.1.20
 django-celery==3.1.17
 django-debug-toolbar
 django-extensions
 Werkzeug
-# kombu==4.0.2
-librabbitmq
