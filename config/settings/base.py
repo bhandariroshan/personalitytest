@@ -13,6 +13,7 @@ from __future__ import absolute_import, unicode_literals
 import environ
 import djcelery
 import os
+from kombu import Exchange, Queue
 
 djcelery.setup_loader()
 
