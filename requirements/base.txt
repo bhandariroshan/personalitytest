@@ -60,4 +60,5 @@ django-celery==3.1.17
 django-debug-toolbar
 django-extensions
 Werkzeug
-kombu==4.0.2
+# kombu==4.0.2
+librabbitmq
