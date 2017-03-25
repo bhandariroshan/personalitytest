@@ -50,6 +50,9 @@ services:
       - worker
     command: /gunicorn.sh
     env_file: .env
+    links:
+      - worker
+      - rabbit
 
   nginx:
     build: ./compose/nginx
