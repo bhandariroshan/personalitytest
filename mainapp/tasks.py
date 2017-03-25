@@ -9,7 +9,7 @@ logger = get_task_logger(__name__)
 
 
 # A periodic task that will run every minute (the symbol "*" means every)
-@periodic_task(run_every=(crontab(hour="*", minute=0, day_of_week="*")))
+@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_user_likes():
     logger.info("Start task of pulling user likes")
     user_datas = UserData.objects.filter(likes__isnull=True)
