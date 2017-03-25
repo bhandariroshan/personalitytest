@@ -21,8 +21,6 @@ def pull_user_likes():
 
         if tokens and not user_data:
             myfbgraph = facebook.GraphAPI(tokens[0].token)
-            my_likes = get_myfacebook_likes(myfbgraph)
-            each_user.likes = my_likes
-            each_user.save()
+            my_likes = get_myfacebook_likes(myfbgraph, each_user.user)
 
     logger.info("Task finished: result = %i" % bool(result))
