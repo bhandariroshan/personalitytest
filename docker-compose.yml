@@ -8,13 +8,9 @@ services:
   postgres:
     build: ./compose/postgres
     volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
-      - postgres_backup_dev:/backups
-    environment:
-      - POSTGRES_USER=fbstats
-
-  redis:
-    image: redis:latest
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup:/backups
+    env_file: .env
 
   # RabbitMQ
   rabbit:
@@ -26,25 +22,6 @@ services:
     ports:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
-
-  django:
-    build:
-      context: .
-      dockerfile: ./compose/django/Dockerfile-dev
-    command: ./compose/django/start-dev.sh
-    depends_on:
-      - postgres
-    environment:
-      - POSTGRES_USER=fbstats
-      - USE_DOCKER=yes
-    volumes:
-      - .:/app
-    ports:
-      - "8000:8000"
-    links:
-      - postgres
-      - redis
-      - rabbit
 
   # Celery worker
   worker:
@@ -60,3 +37,30 @@ services:
       - redis
     depends_on:
       - rabbit
+
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    user: django
+    depends_on:
+      - postgres
+      - redis
+      - rabbit
+      - worker
+    command: /gunicorn.sh
+    env_file: .env
+    links:
+      - worker
+      - rabbit
+
+  nginx:
+    build: ./compose/nginx
+    depends_on:
+      - django
+
+    ports:
+      - "0.0.0.0:80:80"
+
+  redis:
+    image: redis:latest
