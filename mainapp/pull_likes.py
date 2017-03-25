@@ -14,7 +14,7 @@ def get_myfacebook_likes(myfacebook_graph, user):
         for like in myfacebook_likes_info['data']:
             myfacebook_likes.append(like)
 
-            user_like  = UserLikes.objects.get_or_create(user=user)
+            user_like  = UserLikes.objects.get_or_create(user=user, like=like)
             user_like[0].like = like
             user_like[0].save()
 
