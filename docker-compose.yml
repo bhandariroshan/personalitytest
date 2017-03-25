@@ -56,7 +56,7 @@ services:
     volumes:
       - .:/app
     links:
-      - db
+      - postgres
       - rabbit
       - redis
     depends_on:
