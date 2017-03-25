@@ -47,19 +47,24 @@ services:
       - "5672:5672"  # we forward this port because it's useful for debugging
       - "15672:15672"  # here, we can access rabbitmq management plugin
 
-  # Celery worker
-  worker:
-    build:
-      context: .
-      dockerfile: ./compose/celery/Dockerfile
-    command: ./compose/celery/run_celery.sh
-    volumes:
-      - .:/app
+  celeryworker:
+    build: .
+    user: django
+    env_file: .env
+    links:
+     - postgres
+     - redis
+    command: celery -A mainapp worker -l INFO
+    restart: always
+
+  celerybeat:
+    build: .
+    user: django
+    env_file: .env
     links:
       - postgres
-      - rabbit
       - redis
-    depends_on:
-      - rabbit
+    command: celery -A mainapp beat -l INFO
+    restart: always
 
 
