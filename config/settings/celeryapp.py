@@ -4,9 +4,9 @@ from celery import Celery as CeleryClass
 from django.conf import settings
 
 # Indicate Celery to use the default Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.base')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fbstats.settings.local')
 
-app = CeleryClass('mainapp')
+app = CeleryClass('fbstats-docker')
 app.config_from_object('django.conf:settings')
 # This line will tell Celery to autodiscover all your tasks.py
 # that are in your app folders
