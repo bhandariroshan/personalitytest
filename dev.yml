@@ -52,7 +52,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/celery/Dockerfile
-    command: /run_celery.sh
+    command: celery worker -A celeryapp -Q default -n default@%h
     volumes:
       - .:/app
     links:
