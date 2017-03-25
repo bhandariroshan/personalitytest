@@ -52,7 +52,6 @@ services:
     links:
       - postgres
       - rabbit
-      - redis
     depends_on:
       - rabbit
 
