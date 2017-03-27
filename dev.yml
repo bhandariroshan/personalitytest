@@ -25,25 +25,6 @@ services:
     ports:
       - "8000:8000"
 
-  # nginx:
-  #   build: ./compose/nginx
-  #   depends_on:
-  #     - django
-
-  #   ports:
-  #     - "0.0.0.0:8001:80"
-
- # RabbitMQ
-  rabbit:
-    hostname: rabbit
-    image: rabbitmq:3.6.0
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=mypass
-    ports:
-      - "5672:5672"  # we forward this port because it's useful for debugging
-      - "15672:15672"  # here, we can access rabbitmq management plugin
-
   redis:
     image: redis:latest
 
