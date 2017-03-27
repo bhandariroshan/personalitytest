@@ -7,6 +7,7 @@ from action.models import UserData, UserLikes
 import requests
 import json
 import facebook
+from allauth.socialaccount.models import SocialToken
 
 logger = get_task_logger(__name__)
 
