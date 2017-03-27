@@ -2,7 +2,7 @@ from celery.task.schedules import crontab
 from celery.decorators import periodic_task
 from celery.utils.log import get_task_logger
 
-from mainapp.pull_likes import get_myfacebook_likes
+from .pull_likes import get_myfacebook_likes
 from action.models import UserData
 
 logger = get_task_logger(__name__)
@@ -20,8 +20,10 @@ def pull_user_likes():
             account__provider='facebook'
         )
 
-        if tokens:
-            myfbgraph = facebook.GraphAPI(tokens[0].token)
-            my_likes = get_myfacebook_likes(myfbgraph, each_user.user)
+        print(tokens)
 
+        myfbgraph = facebook.GraphAPI(tokens[0].token)
+        my_likes = get_myfacebook_likes(myfbgraph, each_user.user)
+
+        print("COMPLETE")
     logger.info("Task finished: result = %i" % bool(result))
