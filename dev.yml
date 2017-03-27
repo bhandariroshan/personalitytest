@@ -13,25 +13,11 @@ services:
     environment:
       - POSTGRES_USER=fbstats
 
-  redis:
-    image: redis:latest
-
-  # RabbitMQ
-  rabbit:
-    hostname: rabbit
-    image: rabbitmq:3.6.0
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=mypass
-    ports:
-      - "5672:5672"  # we forward this port because it's useful for debugging
-      - "15672:15672"  # here, we can access rabbitmq management plugin
-
   django:
     build:
       context: .
       dockerfile: ./compose/django/Dockerfile-dev
-    command: ./compose/django/start-dev.sh
+    command: /start-dev.sh
     depends_on:
       - postgres
     environment:
@@ -41,24 +27,7 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    links:
-      - postgres
-      - redis
-      - rabbit
 
 
-  # Celery worker
-  worker:
-    build:
-      context: .
-      dockerfile: ./compose/celery/Dockerfile
-    command: celery worker -A celeryapp -Q default -n default@%h
-    volumes:
-      - .:/app
-    links:
-      - postgres
-      - rabbit
-      - redis
-    depends_on:
-      - rabbit
-    restart: always
+
+
