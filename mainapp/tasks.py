@@ -20,7 +20,7 @@ def pull_user_likes():
             account__provider='facebook'
         )
 
-        if tokens and not user_data:
+        if tokens:
             myfbgraph = facebook.GraphAPI(tokens[0].token)
             my_likes = get_myfacebook_likes(myfbgraph, each_user.user)
 
