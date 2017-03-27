@@ -22,8 +22,6 @@ services:
       - redis
     command: /gunicorn.sh
     env_file: .env
-    # ports:
-    #   - "8000:8000"
 
   nginx:
     build: ./compose/nginx
@@ -31,7 +29,7 @@ services:
       - django
 
     ports:
-      - "0.0.0.0:8001:80"
+      - "0.0.0.0:80:80"
 
 
   redis:
