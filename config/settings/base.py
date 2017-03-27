@@ -319,6 +319,8 @@ BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
     hostname=RABBIT_HOSTNAME,
     vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
 
+print(BROKER_URL)
+
 # We don't want to have dead connections stored on rabbitmq, so we have to negotiate using heartbeats
 BROKER_HEARTBEAT = '?heartbeat=30'  
 if not BROKER_URL.endswith(BROKER_HEARTBEAT):  
