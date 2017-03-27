@@ -19,12 +19,11 @@ from .base import *  # noqa
 DEBUG = env.bool('DJANGO_DEBUG', default=True)
 TEMPLATES[0]['OPTIONS']['debug'] = DEBUG
 
-
 # SECRET CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Note: This key only used for development and testing.
-SECRET_KEY = env('DJANGO_SECRET_KEY', default='Jhbp(o7@=Y%C:])]ST?T)ozfjbbz!.p#ajI(HI<0^z<8Vn2W+T')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default=',mX{c/85WDEES~|[eqMq`OCN$Nvvc`t3;22Oi(yXp[>geksS0P')
 
 # Mail settings
 # ------------------------------------------------------------------------------
@@ -71,8 +70,26 @@ INSTALLED_APPS += ['django_extensions', ]
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+########## CELERY
+# In development, all tasks will be executed locally by blocking until the task returns
+CELERY_ALWAYS_EAGER = True
+########## END CELERY
+
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# -*- coding: utf-8 -*-
+"""
+Local settings
+
+- Run in Debug mode
+
+- Use console backend for emails
+
+- Add Django Debug Toolbar
+- Add django-extensions as app
+"""
+
 
 
 ALLOWED_HOSTS = ['*']

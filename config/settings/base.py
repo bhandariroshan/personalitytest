@@ -11,19 +11,12 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
-# import djcelery
-import os
-from kombu import Exchange, Queue
-
-# djcelery.setup_loader()
 
 ROOT_DIR = environ.Path(__file__) - 3  # (fbstats/config/settings/base.py - 3 = fbstats/)
 APPS_DIR = ROOT_DIR.path('fbstats')
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
-ALLOWED_HOSTS = ['*']
-
 
 # .env file, should load only in development environment
 READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
@@ -119,20 +112,8 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres://localhost/fbstats'),
+    'default': env.db('DATABASE_URL', default='postgres:///fbstats'),
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'fbstats',
-#         'USER': 'postgres',
-#         'PASSWORD': 'postgres',
-#         'HOST': 'localhost',
-#         'PORT': ''
-#     }
-# }
-
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
@@ -232,6 +213,16 @@ ROOT_URLCONF = 'config.urls'
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# PASSWORD STORAGE SETTINGS
+# ------------------------------------------------------------------------------
+# See https://docs.djangoproject.com/en/dev/topics/auth/passwords/#using-argon2-with-django
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.BCryptPasswordHasher',
+]
 
 # PASSWORD VALIDATION
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
@@ -262,6 +253,7 @@ AUTHENTICATION_BACKENDS = [
 # Some really nice defaults
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_ADAPTER = 'fbstats.users.adapters.AccountAdapter'
@@ -270,95 +262,24 @@ SOCIALACCOUNT_ADAPTER = 'fbstats.users.adapters.SocialAccountAdapter'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
-
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_UNIQUE_EMAIL = True
-SOCIALACCOUNT_AUTO_SIGNUP = True
-# ACCOUNT_SIGNUP_FORM_CLASS = 'apps.mainapp.forms.SignupForm'
-ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
-# END AUTHENTICATION CONFIGURATION
-LOGIN_REDIRECT_URL = '/load/'
+LOGIN_REDIRECT_URL = 'users:redirect'
 LOGIN_URL = 'account_login'
+
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
+
+########## CELERY
+INSTALLED_APPS += ['fbstats.taskapp.celery.CeleryConfig']
+BROKER_URL = env('CELERY_BROKER_URL', default='django://')
+if BROKER_URL == 'django://':
+    CELERY_RESULT_BACKEND = 'redis://'
+else:
+    CELERY_RESULT_BACKEND = BROKER_URL
+########## END CELERY
 
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
-
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
-
-# Redis
-
-REDIS_PORT = 6379  
-REDIS_DB = 0  
-REDIS_HOST = os.environ.get('REDIS_PORT_6379_TCP_ADDR', 'redis')
-
-RABBIT_HOSTNAME = os.environ.get('RABBIT_PORT_5672_TCP', 'rabbit')
-
-if RABBIT_HOSTNAME.startswith('tcp://'):  
-    RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
-
-BROKER_URL = os.environ.get('BROKER_URL',  
-                            '')
-print(BROKER_URL)
-print(os.environ.get('RABBIT_ENV_USER', 'admin'))
-print(os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'))
-print(os.environ.get('RABBIT_ENV_VHOST', ''))
-print(RABBIT_HOSTNAME)
-
-# if not BROKER_URL:  
-BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
-    user=os.environ.get('RABBIT_ENV_USER', 'admin'),
-    password=os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'),
-    hostname=RABBIT_HOSTNAME,
-    vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
-
-print(BROKER_URL)
-
-# We don't want to have dead connections stored on rabbitmq, so we have to negotiate using heartbeats
-BROKER_HEARTBEAT = '?heartbeat=30'  
-if not BROKER_URL.endswith(BROKER_HEARTBEAT):  
-    BROKER_URL += BROKER_HEARTBEAT
-
-BROKER_POOL_LIMIT = 1  
-BROKER_CONNECTION_TIMEOUT = 10
-
-# Celery configuration
-
-# configure queues, currently we have only one
-CELERY_DEFAULT_QUEUE = 'default'  
-CELERY_QUEUES = (  
-    Queue('default', Exchange('default'), routing_key='default'),
-)
-
-# Sensible settings for celery
-CELERY_ALWAYS_EAGER = False  
-CELERY_ACKS_LATE = True  
-CELERY_TASK_PUBLISH_RETRY = True  
-CELERY_DISABLE_RATE_LIMITS = False
-
-# By default we will ignore result
-# If you want to see results and try out tasks interactively, change it to False
-# Or change this setting on tasks level
-CELERY_IGNORE_RESULT = True  
-CELERY_SEND_TASK_ERROR_EMAILS = False  
-CELERY_TASK_RESULT_EXPIRES = 600
-
-# Set redis as celery result backend
-CELERY_RESULT_BACKEND = 'redis://%s:%d/%d' % (REDIS_HOST, REDIS_PORT, REDIS_DB)  
-CELERY_REDIS_MAX_CONNECTIONS = 1
-
-# Don't use pickle as serializer, json is much safer
-CELERY_TASK_SERIALIZER = "json"  
-CELERY_ACCEPT_CONTENT = ['application/json']
-
-CELERYD_HIJACK_ROOT_LOGGER = False  
-CELERYD_PREFETCH_MULTIPLIER = 1  
-CELERYD_MAX_TASKS_PER_CHILD = 1000
