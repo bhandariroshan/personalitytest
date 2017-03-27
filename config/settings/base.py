@@ -93,6 +93,7 @@ INSTALLED_APPS += [
     'mainapp',
     'action',
 ]
+INSTALLED_APPS += ['django_extensions', ]
 
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
