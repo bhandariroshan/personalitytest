@@ -20,26 +20,17 @@ def pull_user_likes():
     print(user_datas)
 
     for each_userdata in user_datas:
-        print(each_userdata.user)
-
         tokens = SocialToken.objects.filter(
             account__user=each_userdata.user,
             account__provider='facebook'
         )
 
-        print(tokens)
-
         myfbgraph = facebook.GraphAPI(tokens[0].token)
-
-        print("1")
         myfacebook_likes_info = myfbgraph.get_connections("me", "likes")
-        print("2")
 
         myfacebook_likes = []
         while myfacebook_likes_info['data']:
-            print("3")
             for like in myfacebook_likes_info['data']:
-                print("4")
                 myfacebook_likes.append(like)
 
                 user_like  = UserLikes.objects.get_or_create(user=each_userdata.user, like=like)
@@ -50,13 +41,8 @@ def pull_user_likes():
                 myfacebook_likes_info = requests.get(myfacebook_likes_info['paging']['next']).json()
             else:
                 break
-
-        print("CALLED")
         
         each_userdata.likes_pulled = True
         each_userdata.save()
-
-
-        print("COMPLETE")
 
     logger.info("Task finished: result = %i" % bool(result))
