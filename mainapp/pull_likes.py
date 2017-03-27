@@ -2,7 +2,7 @@ from allauth.socialaccount.models import SocialToken
 import facebook
 import json
 import requests
-from action.models import UserLikes
+from action.models import UserLikes, UserData
 # from mainapp.models import FacebookPost
 
 
@@ -18,9 +18,15 @@ def get_myfacebook_likes(myfacebook_graph, user):
             user_like[0].like = like
             user_like[0].save()
 
+        
+
         if 'next' in myfacebook_likes_info['paging'].keys():
             myfacebook_likes_info = requests.get(myfacebook_likes_info['paging']['next']).json()
         else:
             break
+
+    user_data = UserData.objects.filter(user=user)
+    user_data[0].likes_pulled = True
+    user_data[0].save()
 
     return myfacebook_likes

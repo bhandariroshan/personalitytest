@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 @periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_user_likes():
     logger.info("Start task of pulling user likes")
-    user_datas = UserData.objects.filter(likes__isnull=True)
+    user_datas = UserData.objects.filter(likes_pulled=False)
     for each_user in user_datas:
         tokens = SocialToken.objects.filter(
             account__user=each_user.user,
