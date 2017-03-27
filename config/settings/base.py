@@ -71,6 +71,29 @@ LOCAL_APPS = [
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
+
+INSTALLED_APPS += [
+    # 'django.contrib.admin',
+    # 'django.contrib.auth',
+    # 'django.contrib.contenttypes',
+    # 'django.contrib.sessions',
+    # 'django.contrib.messages',
+    # 'django.contrib.staticfiles',
+    # 'django.contrib.sites',
+    'rest_framework',
+    # allauth
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.twitter',
+    # 'djcelery',
+    'celery',
+    # # local apps
+    'mainapp',
+    'action',
+]
+
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
