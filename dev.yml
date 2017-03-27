@@ -1,33 +1,59 @@
 version: '2'
 
 volumes:
-  postgres_data_dev: {}
-  postgres_backup_dev: {}
+  postgres_data: {}
+  postgres_backup: {}
 
 services:
   postgres:
     build: ./compose/postgres
     volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
-      - postgres_backup_dev:/backups
-    environment:
-      - POSTGRES_USER=fbstats
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_backup:/backups
+    env_file: .env
 
   django:
     build:
       context: .
-      dockerfile: ./compose/django/Dockerfile-dev
-    command: /start-dev.sh
+      dockerfile: ./compose/django/Dockerfile
+    user: django
     depends_on:
       - postgres
-    environment:
-      - POSTGRES_USER=fbstats
-      - USE_DOCKER=yes
-    volumes:
-      - .:/app
+      - redis
+    command: /gunicorn.sh
+    env_file: .env
+
+  nginx:
+    build: ./compose/nginx
+    depends_on:
+      - django
+
     ports:
-      - "8000:8000"
+      - "0.0.0.0:80:80"
 
 
+  redis:
+    image: redis:latest
 
+  celeryworker:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    user: django
+    env_file: .env
+    depends_on:
+     - postgres
+     - redis
+    command: celery -A fbstats.taskapp worker -l INFO
+
+  celerybeat:
+    build:
+      context: .
+      dockerfile: ./compose/django/Dockerfile
+    user: django
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+    command: celery -A fbstats.taskapp beat -l INFO
 
