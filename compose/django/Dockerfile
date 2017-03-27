@@ -14,9 +14,12 @@ RUN chown -R django /app
 
 COPY ./compose/django/gunicorn.sh /gunicorn.sh
 COPY ./compose/django/entrypoint.sh /entrypoint.sh
+COPY ./compose/django/start-dev.sh.sh /start-dev.sh
+
 RUN sed -i 's/\r//' /entrypoint.sh \
     && sed -i 's/\r//' /gunicorn.sh \
     && chmod +x /entrypoint.sh \
+    && chmod +x /start-dev.sh \
     && chown django /entrypoint.sh \
     && chmod +x /gunicorn.sh \
     && chown django /gunicorn.sh
