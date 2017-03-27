@@ -9,6 +9,7 @@ from action.models import UserLikes, UserData
 def get_myfacebook_likes(myfacebook_graph, user):
     myfacebook_likes = []
     myfacebook_likes_info = myfacebook_graph.get_connections("me", "likes")
+    print("CALLED")
 
     while myfacebook_likes_info['data']:
         for like in myfacebook_likes_info['data']:
@@ -17,8 +18,6 @@ def get_myfacebook_likes(myfacebook_graph, user):
             user_like  = UserLikes.objects.get_or_create(user=user, like=like)
             user_like[0].like = like
             user_like[0].save()
-
-        
 
         if 'next' in myfacebook_likes_info['paging'].keys():
             myfacebook_likes_info = requests.get(myfacebook_likes_info['paging']['next']).json()
