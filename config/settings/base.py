@@ -311,6 +311,7 @@ print(BROKER_URL)
 print(os.environ.get('RABBIT_ENV_USER', 'admin'))
 print(os.environ.get('RABBIT_ENV_RABBITMQ_PASS', 'mypass'))
 print(os.environ.get('RABBIT_ENV_VHOST', ''))
+print(RABBIT_HOSTNAME)
 
 # if not BROKER_URL:  
 BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
