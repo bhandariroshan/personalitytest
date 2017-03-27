@@ -23,13 +23,13 @@ services:
     command: /start-dev.sh
     env_file: .env
 
-  nginx:
-    build: ./compose/nginx
-    depends_on:
-      - django
+  # nginx:
+  #   build: ./compose/nginx
+  #   depends_on:
+  #     - django
 
-    ports:
-      - "0.0.0.0:80:80"
+  #   ports:
+  #     - "0.0.0.0:80:80"
 
 
   redis:
