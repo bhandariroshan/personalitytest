@@ -20,12 +20,13 @@ def pull_user_likes():
     print(user_datas)
 
     for each_user in user_datas:
-        print(each_user)
+        print(each_user.user)
 
         tokens = SocialToken.objects.filter(
             account__user=each_user.user,
             account__provider='facebook'
         )
+
         print(tokens)
         
         myfbgraph = facebook.GraphAPI(tokens[0].token)
