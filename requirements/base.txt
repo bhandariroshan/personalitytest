@@ -6,7 +6,7 @@ wheel==0.29.0
 
 # Bleeding edge Django
 django==1.10.6
-argon2
+argon2_cffi
 
 # Configuration
 django-environ==0.4.1
