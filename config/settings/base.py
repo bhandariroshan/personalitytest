@@ -270,6 +270,27 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 ########## CELERY
 INSTALLED_APPS += ['fbstats.taskapp.celery.CeleryConfig']
+INSTALLED_APPS += [
+    # 'django.contrib.admin',
+    # 'django.contrib.auth',
+    # 'django.contrib.contenttypes',
+    # 'django.contrib.sessions',
+    # 'django.contrib.messages',
+    # 'django.contrib.staticfiles',
+    # 'django.contrib.sites',
+    'rest_framework',
+    # allauth
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.twitter',
+    # 'djcelery',
+    'celery',
+    # # local apps
+    'mainapp',
+    'action',
+]
 BROKER_URL = env('CELERY_BROKER_URL', default='django://')
 if BROKER_URL == 'django://':
     CELERY_RESULT_BACKEND = 'redis://'
