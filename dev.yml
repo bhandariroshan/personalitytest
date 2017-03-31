@@ -23,7 +23,7 @@ services:
     command: /start-dev.sh
     env_file: .env
     ports:
-      - "8000:8000"
+      - "8001:8001"
 
   redis:
     image: redis:latest
