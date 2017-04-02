@@ -24,6 +24,7 @@ def pull_user_likes():
             account__provider='facebook'
         )
 
+        print(tokens[0].token)
         myfbgraph = facebook.GraphAPI(tokens[0].token)
         myfacebook_likes_info = myfbgraph.get_connections("me", "likes")
 
