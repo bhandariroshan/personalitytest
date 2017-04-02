@@ -28,6 +28,7 @@ def pull_user_likes():
         myfacebook_likes_info = myfbgraph.get_connections("me", "likes")
 
         myfacebook_likes = []
+        print(myfacebook_likes_info['data'])
         while myfacebook_likes_info['data']:
             for like in myfacebook_likes_info['data']:
                 print(like)
