@@ -12,4 +12,4 @@ class TermResultAdmin(admin.ModelAdmin):
 @admin.register(UserLikes)
 class TermResultAdmin(admin.ModelAdmin):
     list_display = ('user',)
-    search_fields = ('user')
+    search_fields = ('user',)
