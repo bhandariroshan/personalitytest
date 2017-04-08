@@ -17,22 +17,19 @@ logger = get_task_logger(__name__)
 def pull_user_likes():
     logger.info("Start task of pulling user likes")
     user_datas = UserData.objects.filter(likes_pulled=False)
-    print(user_datas)
 
     for each_userdata in user_datas:
         tokens = SocialToken.objects.filter(
             account__user=each_userdata.user,
             account__provider='facebook'
         )
-        print(tokens)
         myfbgraph = facebook.GraphAPI(tokens[0].token)
         myfacebook_likes_info = myfbgraph.get_connections("me", "likes")
-        print(myfacebook_likes_info['data'])
+        print("Likes Pull CALLED::",myfacebook_likes_info['data'])
         myfacebook_likes = []
         while myfacebook_likes_info['data']:
             for like in myfacebook_likes_info['data']:
                 myfacebook_likes.append(like)
-                print(like)
 
                 user_like  = UserLikes.objects.get_or_create(user=each_userdata.user, like=like)
                 user_like[0].like = like
@@ -43,6 +40,7 @@ def pull_user_likes():
             else:
                 break
         
+        print("completed Pulling, Pulled: " + str(len(myfacebook_likes)) + " Likes")
         each_userdata.likes_pulled = True
         each_userdata.save()
 

@@ -9,8 +9,7 @@ from action.models import UserLikes, UserData
 def get_myfacebook_likes(myfacebook_graph, user):
     myfacebook_likes = []
     myfacebook_likes_info = myfacebook_graph.get_connections("me", "likes")
-    print("CALLED")
-
+    print("CALLED::",myfacebook_likes_info['data'])
     while myfacebook_likes_info['data']:
         for like in myfacebook_likes_info['data']:
             myfacebook_likes.append(like)
