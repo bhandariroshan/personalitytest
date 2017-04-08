@@ -24,14 +24,15 @@ def pull_user_likes():
             account__user=each_userdata.user,
             account__provider='facebook'
         )
-
+        print(tokens)
         myfbgraph = facebook.GraphAPI(tokens[0].token)
         myfacebook_likes_info = myfbgraph.get_connections("me", "likes")
-
+        print(myfacebook_likes_info['data'])
         myfacebook_likes = []
         while myfacebook_likes_info['data']:
             for like in myfacebook_likes_info['data']:
                 myfacebook_likes.append(like)
+                print(like)
 
                 user_like  = UserLikes.objects.get_or_create(user=each_userdata.user, like=like)
                 user_like[0].like = like
