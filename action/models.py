@@ -30,4 +30,7 @@ class UserData(models.Model):
 class UserLikes(models.Model):
     user = models.ForeignKey(User)
     like = JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user.first_name) + " " + str(self.user.last_name)
         
