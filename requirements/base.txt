@@ -55,7 +55,8 @@ python3-openid==3.0.10
 requests==2.11.0
 requests-oauthlib==0.6.2
 python-memcached==1.58
-git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
+# git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
+facebook
 # celery==3.1.25
 celery==3.1.20
 # django-celery==3.1.17

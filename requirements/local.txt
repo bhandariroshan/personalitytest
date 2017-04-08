@@ -27,5 +27,5 @@ python3-openid==3.0.10
 requests==2.11.0
 requests-oauthlib==0.6.2
 # python-memcached==1.58
-git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
+# git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
 psycopg2
