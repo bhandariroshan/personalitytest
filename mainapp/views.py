@@ -3,6 +3,7 @@ import json
 from django.views.generic import View
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 import facebook
@@ -11,27 +12,67 @@ from action.models import UserData
 from .pull_likes import get_myfacebook_likes
 import requests
 import sys
+import csv
+from mainapp.models import PSYPTItem, PSYPTUserAttempt
 
 
-class DataPreview(LoginRequiredMixin, View):
+class HomeView(View):
+    """docstring for HomeView"""
     """Module for previewing data from facebook."""
-    template_name = 'preview.html'
+    template_name = 'landing.html'
 
-    def get_context_data(self, **kwargs):
-        context = {}
-        tokens = SocialToken.objects.filter(
-            account__user=self.request.user,
-            account__provider='facebook'
-        )
-        if tokens:
-            context['token'] = tokens[0].token
-
-        fb_app = get_object_or_404(SocialApp, id=1)
-        context['app_id'] = fb_app.client_id
-        return context
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_context_data())
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/load/')
+        else:
+            return render(request, self.template_name, {})
+        
+class LoadQuestions(View):
+
+    def get(self, request, *args, **kwargs):
+        with open('questions.csv', 'r') as csvfile:
+            spamreader = csv.reader(csvfile)
+            for row in spamreader:
+                pi = PSYPTItem()
+                pi.content = row[0]
+                pi.item_num_1 = row[1]
+                pi.save()
+        return HttpResponseRedirect('/')
+
+
+class TestView(View):
+    """Taking Test."""
+
+    template_name = 'test.html'
+    def get(self, request, *args, **kwargs):
+        nextquest = int(request.GET.get('next', 0))
+
+        optionselected = request.GET.get('optionselected','')
+        
+        if nextquest < 1:
+            nextquest = 0
+        if nextquest >= 20:
+            nextquest = 19
+    
+        question = PSYPTItem.objects.filter()[nextquest]
+
+        userattempt = PSYPTUserAttempt.objects.get_or_create(
+            user=request.user,
+            psy_pt_item=question,
+        )
+        userattempt[0].answer=optionselected
+        userattempt[0].save()
+
+        return render(
+            request, 
+            self.template_name, 
+            {
+                'question': question, 
+                'qno': nextquest,
+                'qid': question.id
+            }
+        )
 
 
 class LoadUserLikes(LoginRequiredMixin, View):

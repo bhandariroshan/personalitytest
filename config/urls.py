@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 
-from mainapp.views import DataPreview, LoadUserLikes
+from mainapp.views import LoadUserLikes, HomeView, TestView, LoadQuestions
 
 from django.views.decorators.cache import cache_page
 from action.api import UserDataDetail, UserDataList
@@ -18,13 +18,23 @@ from action.api import UserDataDetail, UserDataList
 urlpatterns = [
     url(
         r'^$',
-        view=TemplateView.as_view(template_name='landing.html'),
+        view=HomeView.as_view(),
         name='home'
     ),
     url(
         r'^load/',
         view=LoadUserLikes.as_view(),
         name='load'
+    ),
+    url(
+        r'^test/',
+        view=TestView.as_view(),
+        name='startTest'
+    ),
+    url(
+        r'^loadquestions/',
+        view=LoadQuestions.as_view(),
+        name='loadquestions'
     ),
     # url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
 
@@ -38,11 +48,7 @@ urlpatterns = [
     url(
         r'^api-auth/', include(
             'rest_framework.urls', namespace='rest_framework')),
-    url(
-        r'^preview/$',
-        view=DataPreview.as_view(),
-        name='data-preview'
-    )
+
     # Your stuff: custom urls includes go here
 
 

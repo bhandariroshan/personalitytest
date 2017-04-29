@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+
+{% block title %}Welcome{% endblock title %}
+
+{% block content %}
+
+<div class="wrapper sidenav-closed" ng-class="{ &#39;true&#39;: &#39;sidenav-opened&#39;, &#39;false&#39;: &#39;sidenav-closed&#39; }[layoutController.showMainMenu]">
+
+
+<!--suppress HtmlUnknownTarget -->
+<div ng-controller="TestRunnerController as vm" data-test-id="miniIPIP" class="ng-scope">
+<div class="progress-container">
+    <div class="progress ng-isolate-scope" ng-transclude="">
+        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="5%" style="min-width: 0px; width: 5%;" ng-transclude="" value="vm.progressPercent"></div>
+    </div>
+</div>
+    <div class="container-fluid item-container" role="main">
+<div class="test-name">
+    <h3>Short Personality Test</h3>
+        <a href="/load/">
+            <div class="info"><span>i</span></div>
+        </a>
+</div>
+
+<div ng-show="vm.item != null" class="">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <div class="question">
+                <div ng-bind-html="vm.item.questions[0].question.text" class="ng-binding">{{question}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="vm.item != null">
+        <!-- ngRepeat: option in vm.item.questions[0].question.options --><div class="options ng-scope" style="float: left; width: 20%;">
+            <div class="option-container">
+                <div class="option ng-binding odd" onclick="respond(0)">Very Inaccurate</div>
+            </div>
+        </div><!-- end ngRepeat: option in vm.item.questions[0].question.options --><div class="options ng-scope" style="float: left; width: 20%;">
+            <div class="option-container">
+                <div class="option ng-binding odd" onclick="respond(1)">Moderately Inaccurate</div>
+            </div>
+        </div><!-- end ngRepeat: option in vm.item.questions[0].question.options --><div class="options ng-scope" style="float: left; width: 20%;">
+            <div class="option-container">
+                <div class="option ng-binding odd" onclick="respond(2)">Neither Inaccurate nor Accurate</div>
+            </div>
+        </div><!-- end ngRepeat: option in vm.item.questions[0].question.options --><div class="options ng-scope" style="float: left; width: 20%;">
+            <div class="option-container">
+                <div class="option ng-binding odd" onclick="respond(3)">Moderately Accurate</div>
+            </div>
+        </div><!-- end ngRepeat: option in vm.item.questions[0].question.options --><div class="options ng-scope" style="float: left; width: 20%;">
+            <div class="option-container">
+                <div class="option ng-binding odd" onclick="respond(4)">Very Accurate</div>
+            </div>
+        </div><!-- end ngRepeat: option in vm.item.questions[0].question.options -->
+    </div>
+</div>
+    </div>
+    <span class="next"><i class="glyphicon glyphicon-chevron-right"></i> </span>
+    <span class="prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
+</div>
+
+</div>
+<div class="push"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var question_number = '{{qno|safe}}';
+    var questionid = '{{qid|safe}}';
+
+    $('.next').on('click', function(){
+        var url = '/test/?next=' + (parseInt(question_number)+1) + '&questionid=' + questionid +'&optionselected=';
+        window.location.href = url;
+    })
+
+    $('.prev').on('click', function(){
+        var url = '/test/?next=' + (parseInt(question_number)-1) + '&questionid=' + questionid +'&optionselected=' ;
+        window.location.href = url;
+    })
+
+    function respond(optionindex){
+        var url = '/test/?next=' + (parseInt(question_number)+1) + '&questionid=' + questionid +'&optionselected=' + optionindex;
+        window.location.href = url;
+    }
+
+</script>
+
+{% endblock content %}

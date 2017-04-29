@@ -1,18 +1,50 @@
-{% extends "base.html" %}
 {% load staticfiles i18n %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Home{% endblock title %}
+<head>
 
-{% block content %}
-    <!-- Header -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{% endblock title %} | Personality Test </title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'css/stylish-portfolio.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.0.0/bootstrap-social.css">
+    <!-- Custom Fonts -->
+    <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    {% block css %} {% endblock %}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+
+    {% block content %}
+
+          <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h1>Facebook Stats</h1>
-            <h3>Trying to analyze some simple stats from Facebook API.</h3>
+            <h1>Personality Test</h1>
+            <h3>Login To Proceed ahead.</h3>
             <br>
             {% if request.user.is_authenticated %}
             <h2>Welcome {{request.user.get_full_name}} !</h2>
-            <a href="{% url 'data-preview' %}" class="btn btn-dark btn-lg">Lets Start</a>
+            <a href="" class="btn btn-dark btn-lg">Lets Start</a>
             {% else %}
              <a class="btn btn-social btn-facebook" href="/accounts/facebook/login/?method=oauth2">
                 <span class="fa fa-facebook"></span> Sign in with Facebook
@@ -24,4 +56,31 @@
             {% endif %}
         </div>
     </header>
-{% endblock content %}
+    
+    {% endblock content %}
+
+
+    <!-- jQuery -->
+    <script src="{% static 'js/jquery.js' %}"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close, #close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+    </script>
+    {% block javascript %}
+    {% endblock javascript %}
+</body>
+
+</html>

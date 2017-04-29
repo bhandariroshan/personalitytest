@@ -198,6 +198,20 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+
+
+DATABASES = {
+    'default': {
+        'NAME': 'fbstats',
+        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'PORT': 5432
+    }
+}
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-root
