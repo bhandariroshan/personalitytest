@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 
-from mainapp.views import LoadUserLikes, HomeView, TestView, LoadQuestions
+from mainapp.views import LoadUserLikes, HomeView, TestView, LoadQuestions, ResultView
 
 from django.views.decorators.cache import cache_page
 from action.api import UserDataDetail, UserDataList
@@ -29,7 +29,12 @@ urlpatterns = [
     url(
         r'^test/',
         view=TestView.as_view(),
-        name='startTest'
+        name='test'
+    ),
+    url(
+        r'^result/(?P<testid>[0-9]+)$',
+        view=ResultView.as_view(),
+        name='result'
     ),
     url(
         r'^loadquestions/',

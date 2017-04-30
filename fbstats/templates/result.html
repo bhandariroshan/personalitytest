@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+
+{% block title %}Welcome{% endblock title %}
+
+{% block content %}
+
+    <div class="wrapper sidenav-closed" ng-class="{ &#39;true&#39;: &#39;sidenav-opened&#39;, &#39;false&#39;: &#39;sidenav-closed&#39; }[layoutController.showMainMenu]">
+
+        <article class="container-fluid">
+            <h1>Thank you!</h1>
+
+            <p>Thank you for participating in the Short Personality Test test.</p>
+
+            <div class="col-md-6">
+            <h3>Your personality</h3>
+
+                    <p>Openness:</p>
+                    <div class="progress ng-isolate-scope" ng-transclude="">
+                        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="16" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="16%" style="min-width: 0px; width: 16%;" ng-transclude="" value="16"><span class="ng-scope">16%</span></div>
+                    </div>
+
+                    <p>Conscientiousness:</p>
+                    <div class="progress ng-isolate-scope" ng-transclude="">
+                        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="73" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="73%" style="min-width: 0px; width: 73%;" ng-transclude="" value="73"><span class="ng-scope">73%</span></div>
+                    </div>
+
+                    <p>Extraversion:</p>
+                    <div class="progress ng-isolate-scope" ng-transclude="">
+                        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="66%" style="min-width: 0px; width: 66%;" ng-transclude="" value="66"><span class="ng-scope">66%</span></div>
+                    </div>
+
+                    <p>Agreeableness:</p>
+                    <div class="progress ng-isolate-scope" ng-transclude="">
+                        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="8%" style="min-width: 0px; width: 8%;" ng-transclude="" value="8"><span class="ng-scope">8%</span></div>
+                    </div>
+
+                    <p>Neuroticism:</p>
+                    <div class="progress ng-isolate-scope" ng-transclude="">
+                        <div class="progress-bar ng-isolate-scope" ng-class="type &amp;&amp; &#39;progress-bar-&#39; + type" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (percent &lt; 100 ? percent : 100) + &#39;%&#39;}" aria-valuetext="50%" style="min-width: 0px; width: 50%;" ng-transclude="" value="50"><span class="ng-scope">50%</span></div>
+                    </div>
+            </div>
+
+            <div class="col-md-6">
+                <p>Answering questions is only one way to discover your personality. Find out <strong>what your preference in
+                    movies,
+                    music and brands reveals about your BIG5 by taking the tests on</strong>, our preference-based
+                    personality
+                    questionnaire.</p>
+
+                <a class="btn btn-primary" href="/test/">Take
+                    more test</a>
+            </div>
+
+            <div class="col-md-12">
+            <h2>Openness</h2>
+
+            <p class="text-highlight">Openness to experience describes a dimension of personality that distinguishes
+                imaginative,
+                creative people from down-to-earth, conventional people.</p>
+
+                <p>This trait refers to the extent to which people prefer novelty versus convention. From the
+                    way you
+                    answered
+                    the questions, you seem to describe yourself as someone who is down-to-earth and prefers
+                    things to
+                    be simple
+                    and straightforwards. You might say that it just makes life easier if things don't
+                    change
+                    unnecessarily,
+                    that the arts are of no practical use to you, and that you think tradition is more important
+                    than
+                    others
+                    do.</p>
+
+                <p><strong>Reflective question: </strong><em>How do you react to change?</em></p>
+
+
+
+
+
+            <h2>Conscientiousness</h2>
+
+            <p class="text-highlight">Conscientiousness concerns the way in which we control, regulate, and direct
+                our
+                impulses.</p>
+
+
+
+
+                <p>This trait refers to the extent to which people prefer an organised, or a flexible, approach
+                    in life.
+                    From
+                    the way you answered the questions, you seem to describe yourself as someone who avoids
+                    foreseeable
+                    trouble
+                    through purposefully planning, and achieves success through persistence. From your responses
+                    it
+                    appears that
+                    you are reliable and prepared for life's challenges.</p>
+
+                <p><strong>Reflective question: </strong><em>How do you feel when you are working with someone
+                    who is
+                    disorganised?</em></p>
+
+
+            <h2>Extraversion</h2>
+
+            <p class="text-highlight">Extraversion is marked by pronounced engagement with the external world,
+                versus being
+                comfortable with your own company.</p>
+
+
+
+
+                <p>This trait refers to the extent to which we enjoy company, and seek excitement and
+                    stimulation. From
+                    the way
+                    you answered the questions, you seem to describe yourself as someone who is energetic and
+                    active.
+                    Your
+                    answers describe you as someone who enjoys and actively seeks out social occasions, and that
+                    you
+                    especially
+                    enjoy talking with a big group of people.</p>
+
+                <p><strong>Reflective question: </strong><em>Do you prefer to be busy all the time? Why?</em>
+                </p>
+
+
+            <h2>Agreeableness</h2>
+
+            <p class="text-highlight">Agreeableness reflects individual differences in concern with cooperation and
+                social
+                harmony.</p>
+
+                <p>This trait refers to the way people express their opinions and manage relationships. From the
+                    way you
+                    answered the questions, you seem to describe yourself as someone who is willing to make
+                    difficult
+                    decisions
+                    when necessary, and will point out when something is wrong no matter what other people might
+                    feel.
+                    Your
+                    responses suggest that you would say that you can be tough and uncompromising.</p>
+
+                <p><strong>Reflective question: </strong><em>When others are experiencing problems, what do you
+                    do?</em>
+                </p>
+
+
+
+
+
+            <h2>Neuroticism</h2>
+
+            <p class="text-highlight">Neuroticism refers to the tendency to experience negative emotions.</p>
+
+
+
+                <p>This trait refers to the way people cope with, and respond to, life's demands. From the way
+                    you
+                    answered the
+                    questions, you seem to describe yourself as someone who is generally calm. Based on your
+                    responses,
+                    you come
+                    across as someone who can feel emotional or stressed out by some experiences, however your
+                    feelings
+                    tend to
+                    be warranted by the situation.</p>
+
+                <p><strong>Reflective question: </strong><em>Which situations make you feel under pressure and
+                    which
+                    situations
+                    do not?</em></p>
+
+
+            </div>
+        </article>
+
+        <div class="push"></div>
+    </div>
+
+{% endblock content %}

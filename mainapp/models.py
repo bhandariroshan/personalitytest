@@ -15,6 +15,7 @@ class PSYPT(models.Model):
     name = models.TextField(null=False, blank=False)
     short_desc = models.TextField(null=True, blank=True)
     ctitation = models.TextField(null=True, blank=True)
+    totalquestions = models.IntegerField(default=20)
 
     # manager
     objects = PSYPTManager()
@@ -31,12 +32,13 @@ class PSYPTDomain(models.Model):
     domain = models.TextField(null=True, blank=True)
     short_desc = models.TextField(null=False, blank=False)
     long_desc = models.TextField(null=True, blank=True)
+    count = models.IntegerField(default=0)
 
     # manager
     objects = PSYPTDomainManager()
     
     def __str__(self):
-        return str(self.domain)
+        return str(self.domain) + " - " + str(self.psy_pt.name)
 
 
 class PSYPTFacet(models.Model):
@@ -58,6 +60,9 @@ class PSYPTFacet(models.Model):
 class PSYPTItem(models.Model):
     """Personality Test Item."""
 
+    # Foregin key to PSY_PT_DOMAIN
+    psy_pt_domain = models.ForeignKey(PSYPTDomain, null=True, blank=True)
+
     content = models.TextField(null=False, blank=False)
 
     # IPIP item number
@@ -69,45 +74,43 @@ class PSYPTItem(models.Model):
     # IPIP item number
     item_num_3 = models.TextField(null=True, blank=True)
 
+    facet = models.TextField(null=True, blank=True)
+
+    # Flag for scoring, e.g. +/-
+    keyed = models.TextField(default="+")
+
     # manager
     objects = PSYPTItemManager()
-    
+        
     def __str__(self):
         return str(self.content)
 
 
-class PSYPTItemDef(models.Model):
-    """Definition for the setup of the test including test identifier and test item identifier."""
+class PSYPTHist(TimeStampedModel):
+    """History for Personality Test."""
 
-    # Foregin key to PSY_PT_DOMAIN
-    psy_pt_domain = models.ForeignKey(PSYPTDomain)
-
-    # Foregin key to PSY_PT_ITEM
-    psy_pt_item = models.ForeignKey(PSYPTItem)
-
-    # Foregin key to PSY_PT
-    psy_pt = models.ForeignKey(PSYPT)
-
-    facet = models.TextField(null=True, blank=True)
-
-    # Flag for scoring, e.g. +/-
-    keyed = models.BooleanField(default=0)
+    user = models.ForeignKey(User)
+    completed = models.BooleanField(default=False)
+    score = models.IntegerField(default=0)
 
     # manager
-    objects = PSYPTItemDefManager()
-    
+    objects = PSYPTHistManager()
+
     def __str__(self):
-        return str(self.psy_pt_item)
+        return str(self.score)
 
 
 class PSYPTUserAttempt(TimeStampedModel):
     """Definition for the test result."""
 
+    # test
+    test = models.ForeignKey(PSYPTHist)
+
     # item
     psy_pt_item = models.ForeignKey(PSYPTItem)
 
     # user
-    user = models.ForeignKey(User)    
+    user = models.ForeignKey(User)
 
     # answer text
     answer = models.TextField(null=True, blank=True)
@@ -139,15 +142,5 @@ class PSYPTResultDef(models.Model):
         return str(self.score)
 
 
-class PSYPTHist(models.Model):
-    """History for Personality Test."""
 
-    userid = models.ForeignKey(User)
-    psy_pt_item_def = models.ForeignKey(PSYPTItemDef)
-    score = models.IntegerField()
-
-    # manager
-    objects = PSYPTHistManager()
-
-    def __str__(self):
-        return str(self.score)
+    
