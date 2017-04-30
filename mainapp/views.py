@@ -18,7 +18,8 @@ from mainapp.models import (
     PSYPTUserAttempt,
     PSYPT,
     PSYPTDomain,
-    PSYPTHist
+    PSYPTHist,
+    PSYPTResultDef
 )
 
 import random
@@ -280,7 +281,38 @@ class ResultView(LoginRequiredMixin, View):
     template_name = 'result.html'
 
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, testid, *args, **kwargs):
         
-        return render(request, self.template_name, {})
+        exam = PSYPTHist.objects.get(id=int(testid))
+        
+        domains = PSYPTDomain.objects.filter()
+        domain_scores = []
+
+        for each_domain in domains:  
+            domain_score = 0
+
+            testanswers = PSYPTUserAttempt.objects.filter(
+                user=request.user,
+                test__id=int(testid),
+                psy_pt_item__psy_pt_domain=each_domain
+            )
+
+            for each_answer in testanswers:
+                if each_answer.psy_pt_item.keyed == '+':
+                    domain_score += int(each_answer.answer) + 1
+                else:
+                    domain_score += 5-int(each_answer.answer)
+
+            result = PSYPTResultDef.objects.get_or_create(
+                exam=exam,
+                psy_pt_domain=each_domain,
+                score=domain_score
+            )
+
+            domain_scores.append(domain_score * 100 / (5*each_domain.count))
+
+            result[0].save()
+
+        print(domain_scores)
+        return render(request, self.template_name, {'scores':domain_scores})
         
