@@ -210,6 +210,7 @@ STATICFILES_FINDERS = [
 #         'PORT': 5432
 #     }
 # }
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 # MEDIA CONFIGURATION
