@@ -77,9 +77,9 @@ class LoadQuestions(View):
         pd.short_desc = 'Neuroticism'
         pd.save()
         
-        with open('questions.csv', 'r') as csvfile:
+        with open('questions.csv', 'r', encoding="utf-8") as csvfile:
             spamreader = csv.reader(csvfile)
-            for row in spamreader.encode("utf-8"):
+            for row in spamreader:
                 pi = PSYPTItem()
                 pi.content = row[0]
                 pi.item_num_1 = row[1]
