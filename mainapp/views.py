@@ -79,7 +79,7 @@ class LoadQuestions(View):
         
         with open('questions.csv', 'r') as csvfile:
             spamreader = csv.reader(csvfile)
-            for row in spamreader:
+            for row in spamreader.encode("utf-8"):
                 pi = PSYPTItem()
                 pi.content = row[0]
                 pi.item_num_1 = row[1]
