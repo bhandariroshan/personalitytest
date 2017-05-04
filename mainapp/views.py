@@ -24,6 +24,7 @@ from mainapp.models import (
 
 import random
 from django.db.models import Q
+from .questions import questions
 
 
 class HomeView(View):
@@ -76,14 +77,15 @@ class LoadQuestions(View):
         pd.domain = 'N'
         pd.short_desc = 'Neuroticism'
         pd.save()
-        
-        with open('questions.csv', 'r', encoding="utf-8") as csvfile:
-            spamreader = csv.reader(csvfile)
-            for row in spamreader:
-                pi = PSYPTItem()
-                pi.content = row[0]
-                pi.item_num_1 = row[1]
+
+        for each_question in questions:
+            pi = PSYPTItem()
+            try:
+                pi.content = each_question.split(',')[0]
+                pi.item_num_1 = each_question.split(',')[1]
                 pi.save()
+            except:
+                pass
 
         return HttpResponseRedirect('/')
 
