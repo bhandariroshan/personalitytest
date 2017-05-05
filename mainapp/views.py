@@ -153,8 +153,8 @@ class TestView(View):
         # If there are 20 answers, mark the exam as completed, redirect to results page
         if attempt_count == totalquestions:
             exam[0].completed = True
-            exam[0].save()
             return HttpResponseRedirect('/result/' + str(exam[0].id))
+        exam[0].save()
 
 
         if nextquest < 1:
@@ -218,18 +218,20 @@ class TestView(View):
         )
         qt[0].save()
 
+        print(exam, exam[0].completed)
         # Get and save attempt of user
         if questionid != '':
-            userattempt = PSYPTUserAttempt.objects.get(
+            userattempt = PSYPTUserAttempt.objects.filter(
                 user=request.user,
                 psy_pt_item__id=int(questionid),
                 test=exam[0]
             )
 
-            if optionselected != '':
-                userattempt.answer=optionselected
+            if optionselected != '' and userattempt:
+                userattempt[0].answer=optionselected
             
-            userattempt.save()
+            if userattempt:
+                userattempt[0].save()
 
         return render(
             request, 
