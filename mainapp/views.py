@@ -361,7 +361,7 @@ class ResultView(LoginRequiredMixin, View):
 
             score = PSYPTResultDef.objects.filter()
             if score:
-                answer_text.append(low.score_desc)
+                answer_text.append(score.score_desc)
             else:
                 answer_text.append("Openness measures your ability.")
                 
