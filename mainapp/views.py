@@ -25,6 +25,8 @@ from mainapp.models import (
 import random
 from django.db.models import Q
 from .questions import questions
+from django.http import JsonResponse
+from django.template import RequestContext
 
 
 class HomeView(View):
@@ -39,7 +41,7 @@ class HomeView(View):
         else:
             return render(request, self.template_name, {})
         
-class LoadQuestions(View):
+class LoadQuestions(LoginRequiredMixin ,View):
 
     def get(self, request, *args, **kwargs):
         pt = PSYPT()
@@ -90,15 +92,13 @@ class LoadQuestions(View):
         return HttpResponseRedirect('/')
 
 
-class TestView(View):
+class TestView(LoginRequiredMixin, View):
     """Taking Test."""
 
     template_name = 'test.html'
-    def get(self, request, *args, **kwargs):
-        nextquest = int(request.GET.get('next', 0))
-        optionselected = request.GET.get('optionselected', '')
-        questionid = request.GET.get('questionid','')
-        
+
+    def  get_question(self, request, nextquest, questionid, optionselected):
+        redirect = False
         ''' 
         ----------------------- Start of Algorithm  ---------------------------------   
             # Exam Generation
@@ -117,14 +117,33 @@ class TestView(View):
 
          ----------------------- End of Algorithm ------------------------------------ 
          '''
-
         # Step 1:: Generate or Get Exam
-        exam  = PSYPTHist.objects.get_or_create(
-            completed=False,
-            user=request.user
-        )
+        try:
+            exam  = PSYPTHist.objects.get_or_create(
+                completed=False,
+                user=request.user
+            )
+        except:
+            exam  = PSYPTHist.objects.filter(
+                completed=False,
+                user=request.user
+            )
         
+        # Get and save attempt of user
+        if questionid != '':
+            userattempt = PSYPTUserAttempt.objects.filter(
+                user=request.user,
+                psy_pt_item__id=int(questionid),
+                test=exam[0]
+            )
 
+            if optionselected != '' and userattempt:
+                userattempt[0].answer=optionselected
+            
+            if userattempt:
+                userattempt[0].save()
+                
+        
         # Step 2:: Question Generation
         #   1. Generate 20 or test based question for Mini Test
         #   2. Make sure it has all O C E A N domain questions 
@@ -142,6 +161,7 @@ class TestView(View):
             test=exam[0]
         ).count()
 
+        print(exam[0])
         # Count the number of questions, based on test
         totalquestions = PSYPT.objects.filter()[0].totalquestions
 
@@ -149,13 +169,13 @@ class TestView(View):
         print("Attempt Count:: ", attempt_count)
 
         percentage = attempt_count / totalquestions * 100
-
         # If there are 20 answers, mark the exam as completed, redirect to results page
-        if attempt_count == totalquestions:
+        if attempt_count >= totalquestions:
             exam[0].completed = True
-            return HttpResponseRedirect('/result/' + str(exam[0].id))
+            exam[0].save()
+            redirect = True
+            return (redirect, None, None, None, exam[0].id)
         exam[0].save()
-
 
         if nextquest < 1:
             nextquest = 0
@@ -168,7 +188,6 @@ class TestView(View):
             test=exam[0],
             answer__isnull=True
         )
-
         if nextquest == totalquestions-1 and unattemted:
             # serve unattempted question
             question = unattemted[0].psy_pt_item
@@ -193,10 +212,8 @@ class TestView(View):
                 ).count()
 
                 question_count_in_domain.append(question_count)
-
             min_value = min(question_count_in_domain)
             domain_index = question_count_in_domain.index(min_value)
-
             unwanted_objects = PSYPTUserAttempt.objects.filter(
                 user=request.user,
                 test=exam[0],
@@ -204,12 +221,11 @@ class TestView(View):
             )
 
             unwanted_list = [o.psy_pt_item.id for o in unwanted_objects]
-
             question = PSYPTItem.objects.filter(
                 ~Q(id__in=unwanted_list),
                 psy_pt_domain=domains[domain_index],
-            )[0]
-
+            )
+            question = question[0]
         # Create attempt for question
         qt = PSYPTUserAttempt.objects.get_or_create(
             user=request.user,
@@ -218,20 +234,23 @@ class TestView(View):
         )
         qt[0].save()
 
-        print(exam, exam[0].completed)
-        # Get and save attempt of user
-        if questionid != '':
-            userattempt = PSYPTUserAttempt.objects.filter(
-                user=request.user,
-                psy_pt_item__id=int(questionid),
-                test=exam[0]
-            )
 
-            if optionselected != '' and userattempt:
-                userattempt[0].answer=optionselected
-            
-            if userattempt:
-                userattempt[0].save()
+        return (redirect, nextquest, percentage, question, exam[0].id)
+
+    def get(self, request, *args, **kwargs):
+        nextquest = int(request.GET.get('next', 0))
+        optionselected = request.GET.get('optionselected', '')
+        questionid = request.GET.get('questionid','')
+
+        redirect, nextquest, percentage, question, examid = self.get_question(
+            request, 
+            nextquest, 
+            questionid, 
+            optionselected
+        )
+
+        if redirect:
+            return HttpResponseRedirect('/result/' + str(examid))
 
         return render(
             request, 
@@ -241,9 +260,33 @@ class TestView(View):
                 'qno': nextquest,
                 'qid': question.id,
                 'percentage': percentage
-            }
+            }, 
+            RequestContext(request, {})
         )
 
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        nextquest = int(request.POST.get('next', 0))
+        optionselected = request.POST.get('optionselected', '')
+        questionid = request.POST.get('questionid','')
+
+        redirect, nextquest, percentage, question, examid = self.get_question(
+            request, 
+            nextquest, 
+            questionid, 
+            optionselected
+        )
+        if redirect:
+            return JsonResponse({'url': '/result/' + str(examid) + '/', 'status': 'redirect'})
+        else:
+            return JsonResponse({
+                'status': 'ok',
+                'question': question.content, 
+                'qno': nextquest,
+                'qid': question.id,
+                'percentage': percentage
+            })
 
 class LoadUserLikes(LoginRequiredMixin, View):
     """Module for previewing data from facebook."""

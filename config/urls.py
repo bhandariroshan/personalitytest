@@ -32,7 +32,7 @@ urlpatterns = [
         name='test'
     ),
     url(
-        r'^result/(?P<testid>[0-9]+)$',
+        r'^result/(?P<testid>[0-9]+)/$',
         view=ResultView.as_view(),
         name='result'
     ),
