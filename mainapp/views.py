@@ -27,6 +27,7 @@ from django.db.models import Q
 from .questions import questions
 from django.http import JsonResponse
 from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
 
 
 class HomeView(View):
@@ -161,7 +162,6 @@ class TestView(LoginRequiredMixin, View):
             test=exam[0]
         ).count()
 
-        print(exam[0])
         # Count the number of questions, based on test
         totalquestions = PSYPT.objects.filter()[0].totalquestions
 
@@ -264,7 +264,7 @@ class TestView(LoginRequiredMixin, View):
             RequestContext(request, {})
         )
 
-
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         print(request.POST)
         nextquest = int(request.POST.get('next', 0))
@@ -334,6 +334,7 @@ class ResultView(LoginRequiredMixin, View):
         
         domains = PSYPTDomain.objects.filter()
         domain_scores = []
+        answer_text = []
 
         for each_domain in domains:  
             domain_score = 0
@@ -356,16 +357,16 @@ class ResultView(LoginRequiredMixin, View):
                     except:
                         pass
 
-            result = PSYPTResultDef.objects.get_or_create(
-                exam=exam,
-                psy_pt_domain=each_domain,
-                score=domain_score
-            )
+            # Score categorization and result display dynamic here
 
+            score = PSYPTResultDef.objects.filter()
+            if score:
+                answer_text.append(low.score_desc)
+            else:
+                answer_text.append("Openness measures your ability.")
+                
             domain_scores.append(domain_score * 100 / (5*each_domain.count))
+            # result[0].save()
 
-            result[0].save()
-
-        print(domain_scores)
-        return render(request, self.template_name, {'scores':domain_scores})
+        return render(request, self.template_name, {'scores':domain_scores, 'text': answer_text})
         

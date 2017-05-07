@@ -134,8 +134,6 @@ class PSYPTResultDef(models.Model):
     # Foreigin Key to PSYPTDomain
     psy_pt_domain =  models.ForeignKey(PSYPTDomain)
 
-    exam = models.ForeignKey(PSYPTHist)
-
     # manager
     objects = PSYPTResultDefManager()
     

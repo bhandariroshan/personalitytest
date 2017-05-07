@@ -4,7 +4,7 @@
 {% block title %}Welcome{% endblock title %}
 
 {% block content %}
-
+    {% csrf_token %}
 <div class="wrapper sidenav-closed" ng-class="{ &#39;true&#39;: &#39;sidenav-opened&#39;, &#39;false&#39;: &#39;sidenav-closed&#39; }[layoutController.showMainMenu]">
 
 
@@ -65,6 +65,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
+
     var question_number = '{{qno|safe}}';
     var questionid = '{{qid|safe}}';
     var percentage = '{{percentage}}';

@@ -38,3 +38,9 @@ class PSYPTItemAdmin(admin.ModelAdmin):
     list_display = (
        "content", "psy_pt_domain",  "item_num_1", "keyed"
     )
+
+@admin.register(PSYPTResultDef)
+class PSYPTItemAdmin(admin.ModelAdmin):
+    list_display = (
+       "score", "psy_pt_domain",  "score_desc"
+    )
