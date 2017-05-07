@@ -226,6 +226,7 @@ class TestView(LoginRequiredMixin, View):
                 psy_pt_domain=domains[domain_index],
             )
             question = question[0]
+
         # Create attempt for question
         qt = PSYPTUserAttempt.objects.get_or_create(
             user=request.user,
@@ -233,7 +234,6 @@ class TestView(LoginRequiredMixin, View):
             test=exam[0]
         )
         qt[0].save()
-
 
         return (redirect, nextquest, percentage, question, exam[0].id)
 
@@ -346,9 +346,15 @@ class ResultView(LoginRequiredMixin, View):
 
             for each_answer in testanswers:
                 if each_answer.psy_pt_item.keyed == '+':
-                    domain_score += int(each_answer.answer) + 1
+                    try:
+                        domain_score += int(each_answer.answer) + 1
+                    except:
+                        pass
                 else:
-                    domain_score += 5-int(each_answer.answer)
+                    try:
+                        domain_score += 5-int(each_answer.answer)
+                    except:
+                        pass
 
             result = PSYPTResultDef.objects.get_or_create(
                 exam=exam,
