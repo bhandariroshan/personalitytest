@@ -358,17 +358,17 @@ class ResultView(LoginRequiredMixin, View):
         for each_answer in testanswers:
             for each_domain in each_answer.psy_pt_item.psy_pt_domain.all():
                 if each_answer.psy_pt_item.keyed == '+':
-                    # try:
-                    domain_scores[each_domain.id]['domainScore'] += int(each_answer.answer) + 1
-                    domain_scores[each_domain.id]['totalScore'] += 5
-                    # except:
-                    #     pass
+                    try:
+                        domain_scores[each_domain.id]['domainScore'] += int(each_answer.answer) + 1
+                        domain_scores[each_domain.id]['totalScore'] += 5
+                    except:
+                        pass
                 else:
-                    # try:
-                    domain_scores[each_domain.id]['domainScore'] += 5-int(each_answer.answer)
-                    domain_scores[each_domain.id]['totalScore'] += 5
-                    # except:
-                    #     pass
+                    try:
+                        domain_scores[each_domain.id]['domainScore'] += 5-int(each_answer.answer)
+                        domain_scores[each_domain.id]['totalScore'] += 5
+                    except:
+                        pass
 
         # Score categorization and result display dynamic here
 
