@@ -380,12 +380,15 @@ class ResultView(LoginRequiredMixin, View):
 
         sendScore = []
         for each_domain in domains:
-            sendScore.append(
-                [
-                    each_domain.short_desc, 
-                    domain_scores[each_domain.id]['domainScore']/domain_scores[each_domain.id]['totalScore']*100
-                ]
-            )
+            try:
+                sendScore.append(
+                    [
+                        each_domain.short_desc, 
+                        domain_scores[each_domain.id]['domainScore']/domain_scores[each_domain.id]['totalScore']*100
+                    ]
+                )
+            except:
+                sendScore.append([each_domain.short_desc, 0])
 
         return render(request, self.template_name, {'scores':sendScore, 'text': answer_text})
         
