@@ -28,6 +28,7 @@ from .questions import questions
 from django.http import JsonResponse
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 class HomeView(View):
@@ -97,6 +98,10 @@ class TestView(LoginRequiredMixin, View):
     """Taking Test."""
 
     template_name = 'test.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(TestView, self).dispatch(request, *args, **kwargs)
 
     def  get_question(self, request, nextquest, questionid, optionselected):
         redirect = False
@@ -223,7 +228,7 @@ class TestView(LoginRequiredMixin, View):
             unwanted_list = [o.psy_pt_item.id for o in unwanted_objects]
             question = PSYPTItem.objects.filter(
                 ~Q(id__in=unwanted_list),
-                psy_pt_domain=domains[domain_index],
+                psy_pt_domain__id__in=[domains[domain_index].id],
             )
             question = question[0]
 
@@ -264,13 +269,12 @@ class TestView(LoginRequiredMixin, View):
             RequestContext(request, {})
         )
 
-    @csrf_exempt
     def post(self, request, *args, **kwargs):
         print(request.POST)
         nextquest = int(request.POST.get('next', 0))
         optionselected = request.POST.get('optionselected', '')
         questionid = request.POST.get('questionid','')
-
+        print(RequestContext(request, {}))
         redirect, nextquest, percentage, question, examid = self.get_question(
             request, 
             nextquest, 
@@ -333,40 +337,55 @@ class ResultView(LoginRequiredMixin, View):
         exam = PSYPTHist.objects.get(id=int(testid))
         
         domains = PSYPTDomain.objects.filter()
-        domain_scores = []
+        domain_scores = {}
+
+        for each_domain in domains:
+            domain_scores[each_domain.id] = {
+                'domainScore': 0,
+                'name': each_domain.domain,
+                'totalScore': 0
+            }
+
         answer_text = []
 
-        for each_domain in domains:  
-            domain_score = 0
+        testanswers = PSYPTUserAttempt.objects.filter(
+            user=request.user,
+            test__id=int(testid),
+            psy_pt_item__psy_pt_domain=each_domain
+        )
 
-            testanswers = PSYPTUserAttempt.objects.filter(
-                user=request.user,
-                test__id=int(testid),
-                psy_pt_item__psy_pt_domain=each_domain
+
+        for each_answer in testanswers:
+            for each_domain in each_answer.psy_pt_item.psy_pt_domain.all():
+                if each_answer.psy_pt_item.keyed == '+':
+                    # try:
+                    domain_scores[each_domain.id]['domainScore'] += int(each_answer.answer) + 1
+                    domain_scores[each_domain.id]['totalScore'] += 5
+                    # except:
+                    #     pass
+                else:
+                    # try:
+                    domain_scores[each_domain.id]['domainScore'] += 5-int(each_answer.answer)
+                    domain_scores[each_domain.id]['totalScore'] += 5
+                    # except:
+                    #     pass
+
+        # Score categorization and result display dynamic here
+
+        score = PSYPTResultDef.objects.filter()
+        if score:
+            answer_text.append(score[0].score_desc)
+        else:
+            answer_text.append("Openness measures your ability.")
+
+        sendScore = []
+        for each_domain in domains:
+            sendScore.append(
+                [
+                    each_domain.short_desc, 
+                    domain_scores[each_domain.id]['domainScore']/domain_scores[each_domain.id]['totalScore']*100
+                ]
             )
 
-            for each_answer in testanswers:
-                if each_answer.psy_pt_item.keyed == '+':
-                    try:
-                        domain_score += int(each_answer.answer) + 1
-                    except:
-                        pass
-                else:
-                    try:
-                        domain_score += 5-int(each_answer.answer)
-                    except:
-                        pass
-
-            # Score categorization and result display dynamic here
-
-            score = PSYPTResultDef.objects.filter()
-            if score:
-                answer_text.append(score[0].score_desc)
-            else:
-                answer_text.append("Openness measures your ability.")
-                
-            domain_scores.append(domain_score * 100 / (5*each_domain.count))
-            # result[0].save()
-
-        return render(request, self.template_name, {'scores':domain_scores, 'text': answer_text})
+        return render(request, self.template_name, {'scores':sendScore, 'text': answer_text})
         

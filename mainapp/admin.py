@@ -36,7 +36,7 @@ class PSYPTDomainAdmin(admin.ModelAdmin):
 @admin.register(PSYPTItem)
 class PSYPTItemAdmin(admin.ModelAdmin):
     list_display = (
-       "content", "psy_pt_domain",  "item_num_1", "keyed"
+       "content",  "item_num_1", "keyed"
     )
 
 @admin.register(PSYPTResultDef)

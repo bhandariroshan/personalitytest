@@ -61,7 +61,7 @@ class PSYPTItem(models.Model):
     """Personality Test Item."""
 
     # Foregin key to PSY_PT_DOMAIN
-    psy_pt_domain = models.ForeignKey(PSYPTDomain, null=True, blank=True)
+    psy_pt_domain = models.ManyToManyField(PSYPTDomain)
 
     content = models.TextField(null=False, blank=False)
 

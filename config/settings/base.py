@@ -200,16 +200,16 @@ STATICFILES_FINDERS = [
 
 
 
-# DATABASES = {
-#     'default': {
-#         'NAME': 'fbstats',
-#         'HOST': 'localhost',
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'USER': 'postgres',
-#         'PASSWORD': 'admin',
-#         'PORT': 5432
-#     }
-# }
+DATABASES = {
+    'default': {
+        'NAME': 'fbstats',
+        'HOST': 'localhost',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'PORT': 5432
+    }
+}
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -279,7 +279,7 @@ SOCIALACCOUNT_ADAPTER = 'fbstats.users.adapters.SocialAccountAdapter'
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = '/load/'
-LOGIN_URL = 'account_login'
+LOGIN_URL = '/'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
