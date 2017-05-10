@@ -77,7 +77,7 @@ class PSYPTItem(models.Model):
     facet = models.TextField(null=True, blank=True)
 
     # Flag for scoring, e.g. +/-
-    keyed = models.TextField(default="+")
+    keyed = models.TextField(default="+", null=True, blank=True)
 
     # manager
     objects = PSYPTItemManager()
