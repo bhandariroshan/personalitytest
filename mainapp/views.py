@@ -124,16 +124,11 @@ class TestView(LoginRequiredMixin, View):
          ----------------------- End of Algorithm ------------------------------------ 
          '''
         # Step 1:: Generate or Get Exam
-        try:
-            exam  = PSYPTHist.objects.get_or_create(
-                completed=False,
-                user=request.user
-            )
-        except:
-            exam  = PSYPTHist.objects.filter(
-                completed=False,
-                user=request.user
-            )
+        
+        exam  = PSYPTHist.objects.get_or_create(
+            completed=False,
+            user=request.user
+        )
         
         # Get and save attempt of user
         if questionid != '':
@@ -168,20 +163,32 @@ class TestView(LoginRequiredMixin, View):
         ).count()
 
         # Count the number of questions, based on test
-        totalquestions = PSYPT.objects.filter()[0].totalquestions
+        psypt = PSYPT.objects.filter()[0]
+
+        # psyptt domains
+        domains = PSYPTDomain.objects.filter(psy_pt=psypt)
+
+        qids = PSYPTItem.objects.filter(psy_pt_domain__in=domains).values('id').distinct()
+        questionids = []
+        for eachid in qids:
+            if eachid not in questionids:
+                questionids.append(eachid['id'])
+        totalquestions = len(questionids)
 
         print("Total Questions:: ", totalquestions)
         print("Attempt Count:: ", attempt_count)
 
-        percentage = attempt_count / totalquestions * 100
         # If there are 20 answers, mark the exam as completed, redirect to results page
         if attempt_count >= totalquestions:
             exam[0].completed = True
             exam[0].save()
             redirect = True
             return (redirect, None, None, None, exam[0].id)
+
         exam[0].save()
 
+        percentage = attempt_count / totalquestions * 100
+        
         if nextquest < 1:
             nextquest = 0
         if nextquest >= totalquestions:
@@ -193,7 +200,8 @@ class TestView(LoginRequiredMixin, View):
             test=exam[0],
             answer__isnull=True
         )
-        if nextquest == totalquestions-1 and unattemted:
+
+        if nextquest <= totalquestions and unattemted:
             # serve unattempted question
             question = unattemted[0].psy_pt_item
         else:
@@ -205,32 +213,19 @@ class TestView(LoginRequiredMixin, View):
             #  5. Repeat steps 2 to 4 until we get total questions
 
             # filter for different exam
-            domains = PSYPTDomain.objects.filter()
-            question_count_in_domain = []
 
-            for each_domain in domains:            
-                # count questions already generated from the domain
-                question_count = PSYPTUserAttempt.objects.filter(
-                    user=request.user,
-                    test=exam[0],
-                    psy_pt_item__psy_pt_domain=each_domain
-                ).count()
-
-                question_count_in_domain.append(question_count)
-            min_value = min(question_count_in_domain)
-            domain_index = question_count_in_domain.index(min_value)
             unwanted_objects = PSYPTUserAttempt.objects.filter(
                 user=request.user,
-                test=exam[0],
-                psy_pt_item__psy_pt_domain=domains[domain_index]
+                test=exam[0]
             )
 
             unwanted_list = [o.psy_pt_item.id for o in unwanted_objects]
-            question = PSYPTItem.objects.filter(
-                ~Q(id__in=unwanted_list),
-                psy_pt_domain__id__in=[domains[domain_index].id],
+
+            difflist = set(questionids) - set(unwanted_list)
+            questions = PSYPTItem.objects.filter(
+                id=difflist.pop()
             )
-            question = question[0]
+            question = questions[0]
 
         # Create attempt for question
         qt = PSYPTUserAttempt.objects.get_or_create(
@@ -270,11 +265,9 @@ class TestView(LoginRequiredMixin, View):
         )
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         nextquest = int(request.POST.get('next', 0))
         optionselected = request.POST.get('optionselected', '')
         questionid = request.POST.get('questionid','')
-        print(RequestContext(request, {}))
         redirect, nextquest, percentage, question, examid = self.get_question(
             request, 
             nextquest, 
@@ -357,21 +350,19 @@ class ResultView(LoginRequiredMixin, View):
 
         for each_answer in testanswers:
             for each_domain in each_answer.psy_pt_item.psy_pt_domain.all():
-                if each_answer.psy_pt_item.keyed == '+':
-                    try:
+                try:
+                    if each_answer.psy_pt_item.keyed == '+':
                         domain_scores[each_domain.id]['domainScore'] += int(each_answer.answer) + 1
                         domain_scores[each_domain.id]['totalScore'] += 5
-                    except:
-                        pass
-                else:
-                    try:
+                    else:
                         domain_scores[each_domain.id]['domainScore'] += 5-int(each_answer.answer)
                         domain_scores[each_domain.id]['totalScore'] += 5
-                    except:
-                        pass
+                except:
+                    domain_scores[each_domain.id]['domainScore'] += 0
+                    domain_scores[each_domain.id]['totalScore'] += 0
+
 
         # Score categorization and result display dynamic here
-
         score = PSYPTResultDef.objects.filter()
         if score:
             answer_text.append(score[0].score_desc)
@@ -381,14 +372,14 @@ class ResultView(LoginRequiredMixin, View):
         sendScore = []
         for each_domain in domains:
             try:
+                scor = domain_scores[each_domain.id]['domainScore']/domain_scores[each_domain.id]['totalScore']*100
                 sendScore.append(
                     [
                         each_domain.short_desc, 
-                        domain_scores[each_domain.id]['domainScore']/domain_scores[each_domain.id]['totalScore']*100
+                        "{0:.2f}".format(round(scor,2))
                     ]
                 )
             except:
                 sendScore.append([each_domain.short_desc, 0])
 
         return render(request, self.template_name, {'scores':sendScore, 'text': answer_text})
-        
