@@ -33,4 +33,18 @@ class UserLikes(models.Model):
 
     def __str__(self):
         return str(self.user.first_name) + " " + str(self.user.last_name)
+
+ 
+class  PageSettings (models.Model):
+    """History of PageConversation."""
+    pageid = models.TextField(null=True, blank=True)
+    access_token = models.TextField(null=True, blank=True)
+
+
+class  PageConversation (models.Model):
+    """History of PageConversation."""
+    conversation_replied = models.BooleanField(default=False)
+    reply_message = models.TextField(null=True, blank=True)
+    conversation = JSONField(null=True, blank=True)
+
         
