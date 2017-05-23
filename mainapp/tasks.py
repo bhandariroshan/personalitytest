@@ -70,12 +70,13 @@ def pull_page_conversations():
         params="access_token=" + tokens[0].access_token
         access_token = tokens[0].access_token
     else:
-        base_url = "https://graph.facebook.com/v2.9/667782319960906/conversations?"
-        access_token = "EAAJeSI6et1kBAG0PhzkRHIh1Wk5VZBQbhWj2tFIatrzqnvPdXct1yYWfkgLOu66a9oerFcaZCrxqtbE5wLYKZCZBF5NbjKfkc3BfCvGSLnZCZAG1HiZCJzjhYR2UbwhlEm2KcxgHxbk2ZCNiagRoXOjTVv3TUvTr4CoZD"
-        params = "access_token="+access_token, 
+        base_url = "https://graph.facebook.com/v2.9/6677823960906/conversations?"
+        access_token = "EAAJeSI6et1AG0PhzkRHIh1Wk5VZBQbhWj2tFIatrzqnvPdXct1yYWfkgLOu66a9oerFcaZCrxqtbE5wLYKZCZBF5NbjKfkc3BfCvGSLnZCZAG1HiZCJzjhYR2UbwhlEm2KcxgHxbk2ZCNiagRoXOjTVv3TUvTr4CoZD"
+        params = "access_token="+access_token
     
     # get all page conversations
-    conversations = requests.get(base_url+params).json()['data']
+    conversations = requests.get(base_url+params).json()
+    conversations =  conversations['data']
 
     for each_conversation in conversations:
         pc = PageConversation.objects.get_or_create(conversation=each_conversation)
@@ -94,12 +95,13 @@ def pull_page_conversations():
                  data=json.dumps(payload),
                  headers = {"Content-Type": "application/json"}
             )
-            pc.conversation_replied = True
-            pc.reply_message = joke
+            print("Joke Sent")
+            pc[0].conversation_replied = True
+            pc[0].reply_message = joke
 
         except:
             pass
 
-        pc.save()
+        pc[0].save()
 
-    logger.info("Task finished: result = %i" % bool(result))
+    print("Jokes Send Complete!!")
