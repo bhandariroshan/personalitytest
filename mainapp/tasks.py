@@ -76,7 +76,10 @@ def pull_page_conversations():
     
     # get all page conversations
     conversations = requests.get(base_url+params).json()
+    print('-------------------------------------------')
     print(conversations)
+    print('-------------------------------------------')
+    print(access_token)
     conversations =  conversations['data']
 
     for each_conversation in conversations:
