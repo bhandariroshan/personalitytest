@@ -66,7 +66,7 @@ def pull_page_conversations():
 
     # Read all conversations
     if tokens:
-        base_url="https://graph.facebook.com/v2.9/" + tokens[0].page_id + "/conversations?"
+        base_url="https://graph.facebook.com/v2.9/" + tokens[0].pageid + "/conversations?"
         params="access_token=" + tokens[0].access_token
         access_token = tokens[0].access_token
     else:
