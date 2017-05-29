@@ -1,7 +1,9 @@
 fbstats
 =======
 
-A short description of the project.
+Simple Python and Django based Applicationt to test perform the pyschometric test. Users can login with the facebook, they then will be redirected to the test page. After the test, they will see the results. Users can also take the test multiple tests. 
+
+Admin can set questions from the admin panel.
 
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
