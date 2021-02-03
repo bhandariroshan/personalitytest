@@ -1,4 +1,4 @@
-fbstats
+Personality Test
 =======
 
 Simple Python and Django based Applicationt to test perform the pyschometric test. Users can login with the facebook, they then will be redirected to the test page. After the test, they will see the results. Users can also take the test multiple tests. 
