@@ -58,7 +58,7 @@ python-memcached==1.58
 # git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
 facebook-sdk
 # celery==3.1.25
-celery==3.1.20
+celery==5.2.2
 # django-celery==3.1.17
 django-debug-toolbar
 django-extensions
