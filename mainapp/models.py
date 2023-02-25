@@ -27,7 +27,7 @@ class PSYPT(models.Model):
 class PSYPTDomain(models.Model):
     """Definition for the setup of the test including test identifier and test item identifier."""
 
-    psy_pt = models.ForeignKey(PSYPT)
+    psy_pt = models.ForeignKey(PSYPT, on_delete=models.CASCADE)
 
     domain = models.TextField(null=True, blank=True)
     short_desc = models.TextField(null=False, blank=False)
@@ -104,10 +104,10 @@ class PSYPTUserAttempt(TimeStampedModel):
     """Definition for the test result."""
 
     # test
-    test = models.ForeignKey(PSYPTHist)
+    test = models.ForeignKey(PSYPTHist, on_delete=models.CASCADE)
 
     # item
-    psy_pt_item = models.ForeignKey(PSYPTItem)
+    psy_pt_item = models.ForeignKey(PSYPTItem, on_delete=models.CASCADE)
 
     # user
     user = models.ForeignKey(User)
@@ -132,7 +132,7 @@ class PSYPTResultDef(models.Model):
     score_desc = models.TextField(null=True, blank=True)
 
     # Foreigin Key to PSYPTDomain
-    psy_pt_domain =  models.ForeignKey(PSYPTDomain)
+    psy_pt_domain =  models.ForeignKey(PSYPTDomain, on_delete=models.CASCADE)
 
     # manager
     objects = PSYPTResultDefManager()
