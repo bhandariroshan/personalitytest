@@ -1,5 +1,6 @@
 from celery.schedules import crontab
-from celery.decorators import periodic_task
+from celery import Celery
+
 from celery.utils.log import get_task_logger
 
 from .pull_likes import get_myfacebook_likes
@@ -10,7 +11,6 @@ import facebook
 from allauth.socialaccount.models import SocialToken
 
 logger = get_task_logger(__name__)
-
 app = Celery()
 
 # A periodic task that will run every minute (the symbol "*" means every)
@@ -47,7 +47,7 @@ def pull_user_likes():
 
 
 # A periodic task that will run every minute (the symbol "*" means every)
-@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
+@app.periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_page_conversations():
     logger.info("Start task of pulling page conversations")
     user_datas = UserData.objects.filter(likes_pulled=False)
