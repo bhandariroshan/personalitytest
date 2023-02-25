@@ -52,7 +52,7 @@ djangorestframework
 mysqlclient
 oauthlib
 python3-openid
-requests==2.11.0
+requests==2.20.0
 requests-oauthlib
 python-memcached
 # git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
