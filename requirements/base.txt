@@ -5,61 +5,61 @@
 wheel==0.38.1
 
 # Bleeding edge Django
-django==1.10.6
+django
 argon2_cffi
 
 # Configuration
-django-environ==0.4.1
-whitenoise==3.3.0
+django-environ
+whitenoise
 
 
 # Forms
-django-braces==1.11.0
-django-crispy-forms==1.6.1
+django-braces
+django-crispy-forms
 
 # Models
-django-model-utils==2.6.1
+django-model-utils
 
 # Images
-Pillow==4.0.0
+Pillow
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
-django-allauth==0.31.0
+django-allauth
 
 # On Windows, you must download/install psycopg2 manually
 # from http://www.lfd.uci.edu/~gohlke/pythonlibs/#psycopg
 
 
 # Unicode slugification
-awesome-slugify==1.6.5
+awesome-slugify
 
 # Time zones support
-pytz==2016.10
+pytz
 
 # Redis support
-django-redis==4.7.0
-redis>=2.10.5
+django-redis
+redis
 
 
 
 # Your custom requirements go here
 
 
-defusedxml==0.4.1
+defusedxml
 
-djangorestframework==3.4.4
-mysqlclient==1.3.10
-oauthlib==1.1.2
-python3-openid==3.0.10
+djangorestframework
+mysqlclient
+oauthlib
+python3-openid
 requests==2.11.0
-requests-oauthlib==0.6.2
-python-memcached==1.58
+requests-oauthlib
+python-memcached
 # git+https://github.com/mobolic/facebook-sdk.git#egg=facebook-sdk
 facebook-sdk
-# celery==3.1.25
-celery==3.1.20
-# django-celery==3.1.17
+# celery
+celery
+# django-celery
 django-debug-toolbar
 django-extensions
 Werkzeug
