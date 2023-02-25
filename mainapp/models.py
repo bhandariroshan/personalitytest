@@ -44,7 +44,7 @@ class PSYPTDomain(models.Model):
 class PSYPTFacet(models.Model):
     """Definition for the setup of the test including test identifier and test item identifier."""
 
-    psy_pt_domain = models.ForeignKey(PSYPTDomain)
+    psy_pt_domain = models.ForeignKey(PSYPTDomain, on_delete=models.CASCADE)
 
     facet = models.TextField(null=True, blank=True)
     short_desc = models.TextField(null=False, blank=False)
