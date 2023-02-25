@@ -44,8 +44,6 @@ def pull_user_likes():
         each_userdata.likes_pulled = True
         each_userdata.save()
 
-    logger.info("Task finished: result = %i" % bool(result))
-
 
 # A periodic task that will run every minute (the symbol "*" means every)
 @periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
@@ -69,10 +67,7 @@ def pull_page_conversations():
         base_url="https://graph.facebook.com/v2.9/" + tokens[0].pageid + "/conversations?"
         params="access_token=" + tokens[0].access_token
         access_token = tokens[0].access_token
-    else:
-        base_url = "https://graph.facebook.com/v2.9/1242459489185699/conversations?"
-        access_token = "EAACEdEose0cBAHERcpZB95K4dTiHb3aszZB8aGgRiNiZB4K7GgJvLvziBZB00yAvcprvzcQQ1tlH6eu7Bq9CBiuZB0N8bZBPvZAmIKySRYsetYs6myHSDHOoZBKAi5xCE1175l4QHipPKvFC5sMcbu4ZBImiYsUxqGGEe9Gl4BAetCo7TXE50J9mImFDqPl12AsEZD"
-        params = "access_token="+access_token
+
     
     # get all page conversations
     conversations = requests.get(base_url+params).json()
