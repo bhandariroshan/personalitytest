@@ -11,9 +11,10 @@ from allauth.socialaccount.models import SocialToken
 
 logger = get_task_logger(__name__)
 
+app = Celery()
 
 # A periodic task that will run every minute (the symbol "*" means every)
-@periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
+@app.periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_user_likes():
     logger.info("Start task of pulling user likes")
     user_datas = UserData.objects.filter(likes_pulled=False)
