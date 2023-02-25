@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 
 
 class UserData(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     ver_code = models.TextField(null=True, blank=True)
     mobile_ver_flg = models.BooleanField(default=False)
@@ -28,7 +28,7 @@ class UserData(models.Model):
 
 
 class UserLikes(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     like = JSONField(null=True, blank=True)
 
     def __str__(self):
