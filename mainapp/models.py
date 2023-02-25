@@ -89,7 +89,7 @@ class PSYPTItem(models.Model):
 class PSYPTHist(TimeStampedModel):
     """History for Personality Test."""
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     completed = models.BooleanField(default=False)
     score = models.IntegerField(default=0)
 
@@ -110,7 +110,7 @@ class PSYPTUserAttempt(TimeStampedModel):
     psy_pt_item = models.ForeignKey(PSYPTItem, on_delete=models.CASCADE)
 
     # user
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     # answer text
     answer = models.TextField(null=True, blank=True)
