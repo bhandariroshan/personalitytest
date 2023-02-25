@@ -14,7 +14,7 @@ logger = get_task_logger(__name__)
 app = Celery()
 
 # A periodic task that will run every minute (the symbol "*" means every)
-@app.periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
+@app.task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_user_likes():
     logger.info("Start task of pulling user likes")
     user_datas = UserData.objects.filter(likes_pulled=False)
@@ -47,7 +47,7 @@ def pull_user_likes():
 
 
 # A periodic task that will run every minute (the symbol "*" means every)
-@app.periodic_task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
+@app.task(run_every=(crontab(hour="*", minute="*", day_of_week="*")))
 def pull_page_conversations():
     logger.info("Start task of pulling page conversations")
     user_datas = UserData.objects.filter(likes_pulled=False)
