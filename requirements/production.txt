@@ -9,7 +9,7 @@ psycopg2==2.7
 
 # WSGI Handler
 # ------------------------------------------------
-gevent==1.2.1
+gevent==23.9.0
 gunicorn==19.6.0
 
 # Static and Media Storage
